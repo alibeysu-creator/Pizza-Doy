@@ -7,6 +7,18 @@
             </router-link>
             <button @click.prevent="handleSidebar" class="fa-solid fa-xmark xmark-btn close-db-menu"></button>
         </div>
+        <div class="p-4 flex flex-col items-start gap-y-2">
+            <h3 class="capitalize text-sm font-medium text-heading">{{ $t('label.restaurant_status') }}</h3>
+            <label for="restaurantStatus" class="inline-flex relative items-center gap-3 cursor-pointer">
+                <span class="text-xs font-medium text-heading">{{ $t('label.closed') }}</span>
+                <input type="checkbox" v-model="info.is_restaurant_open" id="restaurantStatus" class="sr-only peer"
+                    @change="changeRestaurantStatus">
+                <div
+                    class="w-11 h-6 bg-gray-200 relative peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary">
+                </div>
+                <span class="text-xs font-medium text-heading">{{ $t('label.open') }}</span>
+            </label>
+        </div>
         <!--        {{ menus }}-->
         <nav class="db-sidebar-nav">
             <ul class="db-sidebar-nav-list" v-if="menus.length > 0" v-for="menu in menus" :key="menu">
@@ -36,13 +48,18 @@
 </template>
 
 <script>
+import alertService from "../../../services/alertService";
+import activityEnum from "../../../enums/modules/activityEnum";
+
 export default {
     name: "BackendMenuComponent",
     data: function () {
         return {
-            activeParentId: 1,
             activeChildId: 0,
             sidebarOpen: false,
+            info: {
+                is_restaurant_open: false
+            }
         }
     },
     computed: {
@@ -87,6 +104,32 @@ export default {
                 document?.querySelector(".db-main")?.classList?.add("expand");
             }
         },
+        changeRestaurantStatus: function () {
+            const isOpening = this.info.is_restaurant_open;
+            this.$store.dispatch('site/restaurantStatus', {
+                site_restaurant_status: isOpening ? activityEnum.ENABLE : activityEnum.DISABLE
+            }).then(res => {
+                this.$store.dispatch('frontendSetting/lists');
+                if (isOpening) {
+                    alertService.success(this.$t('message.restaurant_opened'));
+                } else {
+                    alertService.success(this.$t('message.restaurant_close'));
+                }
+            }).catch(err => {
+                alertService.error(err.response.data.message);
+            });
+        },
+    },
+    watch: {
+        setting: {
+            deep: true,
+            handler(newSetting) {
+                if (newSetting.site_restaurant_status) {
+                    this.info.is_restaurant_open = newSetting.site_restaurant_status == activityEnum.ENABLE;
+                }
+            },
+            immediate: true
+        }
     }
 }
 </script>

@@ -71,7 +71,7 @@
                                         <i class="icon-location1 mt-0.5"></i>
                                         <span v-if="address.apartment">{{ address.apartment }}, {{
                                             address.address
-                                            }}</span>
+                                        }}</span>
                                         <span v-else>{{ address.address }}</span>
                                     </div>
                                 </label>
@@ -127,7 +127,7 @@
                         <div class="p-4 border-b">
                             <h3 class="capitalize font-medium mb-3 text-center">{{
                                 $t('label.cart_summary')
-                            }}</h3>
+                                }}</h3>
                             <div class="flex items-center rounded-2xl w-fit mx-auto mb-6 text-[#008BBA] bg-[#BDEFFF]">
                                 <div v-if="setting.order_setup_delivery === activityEnum.ENABLE"
                                     class="relative cursor-pointer">
@@ -333,81 +333,82 @@
             </div>
         </div>
     </div>
- 
-<div v-if="showPaymentDialog" class="payment-modal">
-  <div>
-    <h3>Zahlungsmethode auswählen</h3>
-    <div v-for="option in paymentOptions" :key="option.value">
-      <label>
-        <input type="radio" v-model="paymentMethod" :value="option.value">
-        {{ option.label }}
-      </label>
+
+    <div v-if="showPaymentDialog" class="payment-modal">
+        <div>
+            <h3>Zahlungsmethode auswählen</h3>
+            <div v-for="option in paymentOptions" :key="option.value">
+                <label>
+                    <input type="radio" v-model="paymentMethod" :value="option.value">
+                    {{ option.label }}
+                </label>
+            </div>
+            <div style="margin-top: 15px;">
+                <button class="payment-btn green" @click="confirmPaymentMethod">Weiter</button>
+                <button class="payment-btn red" @click="showPaymentDialog = false">Abbrechen</button>
+            </div>
+        </div>
     </div>
-    <div style="margin-top: 15px;">
-      <button class="payment-btn green" @click="confirmPaymentMethod">Weiter</button>
-      <button class="payment-btn red" @click="showPaymentDialog = false">Abbrechen</button>
-    </div>
-  </div>
-</div>
 
 
 </template>
 
 <style>
 .payment-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5); /* dim background */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    /* dim background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
 }
 
-.payment-modal > div {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  min-width: 300px;
-  text-align: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+.payment-modal>div {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    min-width: 300px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .payment-modal h3 {
-  margin-bottom: 15px;
+    margin-bottom: 15px;
 }
 
 .payment-modal label {
-  display: block;
-  margin: 8px 0;
+    display: block;
+    margin: 8px 0;
 }
 
 .payment-btn {
-  padding: 8px 16px;
-  border: none;
-  color: white;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
+    padding: 8px 16px;
+    border: none;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
 }
 
 .payment-btn.green {
-  background-color: #28a745;
+    background-color: #28a745;
 }
 
 .payment-btn.red {
-  background-color: #dc3545;
+    background-color: #dc3545;
 }
 
 .payment-btn.green:hover {
-  background-color: #218838;
+    background-color: #218838;
 }
 
 .payment-btn.red:hover {
-  background-color: #c82333;
+    background-color: #c82333;
 }
 </style>
 
@@ -455,12 +456,12 @@ export default {
             },
 
             paymentMethod: null,
-        showPaymentDialog: false,
-        paymentOptions: [
-            { label: 'Barzahlung', value: 'cod' },
-            { label: 'Kreditkarte', value: 'card' },
-            { label: 'Paypal', value: 'paypal' }
-        ],
+            showPaymentDialog: false,
+            paymentOptions: [
+                { label: 'Barzahlung', value: 'cod' },
+                { label: 'Kreditkarte', value: 'card' },
+                { label: 'Paypal', value: 'paypal' }
+            ],
 
             branchAddress: null,
             localDeliveryTimeLabel: null,
@@ -692,7 +693,9 @@ export default {
             }
         }).catch();
 
-        this.$store.dispatch("frontendTimeSlot/today", {}).then(res => {
+        this.checkoutProps.form.order_type = this.orderType;
+
+        this.$store.dispatch("frontendTimeSlot/today", { order_type: this.checkoutProps.form.order_type }).then(res => {
             this.loading.isActive = false;
             this.checkoutProps.form.is_advance_order = isAdvanceOrderEnum.NO
         }).catch((err) => {
@@ -880,132 +883,142 @@ export default {
         },
 
         orderSubmit: function () {
-    // Show payment method dialog before processing order
-    this.showPaymentDialog = true;
-},
-
-confirmPaymentMethod() {
-    if (!this.paymentMethod) {
-        alertService.error("Please select a payment method.");
-        return;
-    }
-
-    // Continue with order submission
-    this.loading.isActive = true;
-    this.checkoutProps.form.subtotal = this.subtotal;
-    this.checkoutProps.form.total = parseFloat(
-        this.subtotal +
-        this.checkoutProps.form.delivery_charge -
-        this.checkoutProps.form.discount
-    ).toFixed(this.setting.site_digit_after_decimal_point);
-
-    this.checkoutProps.form.items = [];
-
-    _.forEach(this.carts, (item) => {
-        let item_variations = [];
-        if (Object.keys(item.item_variations.variations).length > 0) {
-            _.forEach(item.item_variations.variations, (value, index) => {
-                item_variations.push({
-                    "id": value,
-                    "item_id": item.item_id,
-                    "item_attribute_id": index,
-                });
-            });
-        }
-
-        if (Object.keys(item.item_variations.names).length > 0) {
-            let i = 0;
-            _.forEach(item.item_variations.names, (value, index) => {
-                item_variations[i].variation_name = index;
-                item_variations[i].name = value;
-                i++;
-            });
-        }
-
-        let item_extras = [];
-        if (item.item_extras.extras.length) {
-            _.forEach(item.item_extras.extras, (value) => {
-                item_extras.push({
-                    id: value,
-                    item_id: item.item_id,
-                });
-            });
-        }
-
-        if (item.item_extras.names.length) {
-            let i = 0;
-            _.forEach(item.item_extras.names, (value) => {
-                item_extras[i].name = value;
-                i++;
-            });
-        }
-
-        this.checkoutProps.form.items.push({
-            item_id: item.item_id,
-            item_price: item.convert_price,
-            branch_id: this.checkoutProps.form.branch_id,
-            instruction: item.instruction,
-            quantity: item.quantity,
-            discount: item.discount,
-            total_price: item.total,
-            item_variation_total: item.item_variation_total,
-            item_extra_total: item.item_extra_total,
-            item_variations: item_variations,
-            item_extras: item_extras
-        });
-    });
-
-    // Add selected payment method
-    this.checkoutProps.form.payment_method = this.paymentMethod;
-
-    this.checkoutProps.form.items = JSON.stringify(this.checkoutProps.form.items);
-
-    this.$store.dispatch('frontendOrder/save', this.checkoutProps.form).then(orderResponse => {
-        this.mapShow = false;
-        this.location.lat = null;
-        this.location.lng = null;
-        this.branchAddress = null;
-        this.localAddress = {};
-
-        this.checkoutProps.form.branch_id = null;
-        this.checkoutProps.form.subtotal = null;
-        this.checkoutProps.form.discount = 0;
-        this.checkoutProps.form.delivery_charge = 0;
-        this.checkoutProps.form.delivery_time = null;
-        this.checkoutProps.form.total = 0;
-        this.checkoutProps.form.order_type = null;
-        this.checkoutProps.form.is_advance_order = null;
-        this.checkoutProps.form.address_id = null;
-        this.checkoutProps.form.coupon_id = null;
-        this.checkoutProps.form.items = [];
-
-        this.$store.dispatch('frontendCart/resetCart').then(res => {
-            if (this.paymentMethod === 'cod') {
+            this.loading.isActive = true;
+            this.$store.dispatch("frontendSetting/lists").then(res => {
                 this.loading.isActive = false;
-                alertService.success("Order placed successfully. Please pay cash on delivery.");
-                router.push({ name: 'frontend.myOrder', query: { id: orderResponse.data.data.id } } ) }  
-else {
-
-
-
-                 
-            
-               this.loading.isActive = false;
-//router.push({ name: 'payment.pay', params: { id: orderResponse.data.data.id } });
-window.location.href = `/payment/${orderResponse.data.data.id}/pay`;
-
-                  //  href="'/payment/' + order.id + '/pay'"
-                    //router.push({ name: "frontend.myOrder", query: { id: orderResponse.data.data.id } });
-        }} ).catch();
-    }).catch((err) => {
-        this.loading.isActive = false;
-        if (typeof err.response.data.errors === 'object') {
-            _.forEach(err.response.data.errors, (error) => {
-                alertService.error(error[0]);
+                if (res.data.data.site_restaurant_status == activityEnum.DISABLE) {
+                    alertService.error(this.$t('message.restaurant_closed'));
+                    return;
+                }
+                this.showPaymentDialog = true;
+            }).catch((err) => {
+                this.loading.isActive = false;
+                alertService.error(this.$t('message.something_went_wrong'));
             });
-        }
-    });
-},
+        },
+
+        confirmPaymentMethod() {
+            if (!this.paymentMethod) {
+                alertService.error("Please select a payment method.");
+                return;
+            }
+            this.loading.isActive = true;
+            this.checkoutProps.form.subtotal = this.subtotal;
+            this.checkoutProps.form.total = parseFloat(
+                this.subtotal +
+                this.checkoutProps.form.delivery_charge -
+                this.checkoutProps.form.discount
+            ).toFixed(this.setting.site_digit_after_decimal_point);
+
+            this.checkoutProps.form.items = [];
+
+            _.forEach(this.carts, (item) => {
+                let item_variations = [];
+                if (Object.keys(item.item_variations.variations).length > 0) {
+                    _.forEach(item.item_variations.variations, (value, index) => {
+                        item_variations.push({
+                            "id": value,
+                            "item_id": item.item_id,
+                            "item_attribute_id": index,
+                        });
+                    });
+                }
+
+                if (Object.keys(item.item_variations.names).length > 0) {
+                    let i = 0;
+                    _.forEach(item.item_variations.names, (value, index) => {
+                        item_variations[i].variation_name = index;
+                        item_variations[i].name = value;
+                        i++;
+                    });
+                }
+
+                let item_extras = [];
+                if (item.item_extras.extras.length) {
+                    _.forEach(item.item_extras.extras, (value) => {
+                        item_extras.push({
+                            id: value,
+                            item_id: item.item_id,
+                        });
+                    });
+                }
+
+                if (item.item_extras.names.length) {
+                    let i = 0;
+                    _.forEach(item.item_extras.names, (value) => {
+                        item_extras[i].name = value;
+                        i++;
+                    });
+                }
+
+                this.checkoutProps.form.items.push({
+                    item_id: item.item_id,
+                    item_price: item.convert_price,
+                    branch_id: this.checkoutProps.form.branch_id,
+                    instruction: item.instruction,
+                    quantity: item.quantity,
+                    discount: item.discount,
+                    total_price: item.total,
+                    item_variation_total: item.item_variation_total,
+                    item_extra_total: item.item_extra_total,
+                    item_variations: item_variations,
+                    item_extras: item_extras
+                });
+            });
+
+            // Add selected payment method
+            this.checkoutProps.form.payment_method = this.paymentMethod;
+
+            this.checkoutProps.form.items = JSON.stringify(this.checkoutProps.form.items);
+
+            this.$store.dispatch('frontendOrder/save', this.checkoutProps.form).then(orderResponse => {
+                this.mapShow = false;
+                this.location.lat = null;
+                this.location.lng = null;
+                this.branchAddress = null;
+                this.localAddress = {};
+
+                this.checkoutProps.form.branch_id = null;
+                this.checkoutProps.form.subtotal = null;
+                this.checkoutProps.form.discount = 0;
+                this.checkoutProps.form.delivery_charge = 0;
+                this.checkoutProps.form.delivery_time = null;
+                this.checkoutProps.form.total = 0;
+                this.checkoutProps.form.order_type = null;
+                this.checkoutProps.form.is_advance_order = null;
+                this.checkoutProps.form.address_id = null;
+                this.checkoutProps.form.coupon_id = null;
+                this.checkoutProps.form.items = [];
+
+                this.$store.dispatch('frontendCart/resetCart').then(res => {
+                    if (this.paymentMethod === 'cod') {
+                        this.loading.isActive = false;
+                        alertService.success("Order placed successfully. Please pay cash on delivery.");
+                        router.push({ name: 'frontend.myOrder', query: { id: orderResponse.data.data.id } })
+                    }
+                    else {
+
+
+
+
+
+                        this.loading.isActive = false;
+                        //router.push({ name: 'payment.pay', params: { id: orderResponse.data.data.id } });
+                        window.location.href = `/payment/${orderResponse.data.data.id}/pay`;
+
+                        //  href="'/payment/' + order.id + '/pay'"
+                        //router.push({ name: "frontend.myOrder", query: { id: orderResponse.data.data.id } });
+                    }
+                }).catch();
+            }).catch((err) => {
+                this.loading.isActive = false;
+                if (typeof err.response.data.errors === 'object') {
+                    _.forEach(err.response.data.errors, (error) => {
+                        alertService.error(error[0]);
+                    });
+                }
+            });
+        },
 
 
 
@@ -1069,7 +1082,7 @@ window.location.href = `/payment/${orderResponse.data.data.id}/pay`;
             });
             this.checkoutProps.form.items = JSON.stringify(this.checkoutProps.form.items);
             this.$store.dispatch('frontendOrder/save', this.checkoutProps.form).then(orderResponse => {
-                
+
                 this.mapShow = false;
                 this.location.lat = null;
                 this.location.lng = null;
@@ -1091,9 +1104,9 @@ window.location.href = `/payment/${orderResponse.data.data.id}/pay`;
 
                 this.$store.dispatch('frontendCart/resetCart').then(res => {
                     this.loading.isActive = false;
-                    router.push(`/payment/${orderResponse.data.data.id }/pay`);
+                    router.push(`/payment/${orderResponse.data.data.id}/pay`);
 
-                  //  href="'/payment/' + order.id + '/pay'"
+                    //  href="'/payment/' + order.id + '/pay'"
                     //router.push({ name: "frontend.myOrder", query: { id: orderResponse.data.data.id } });
                 }).catch();
             }).catch((err) => {
@@ -1108,6 +1121,10 @@ window.location.href = `/payment/${orderResponse.data.data.id}/pay`;
         changeOrderType: function (e) {
             this.checkoutProps.form.order_type = e;
             this.$store.dispatch('frontendCart/updateOrderType', this.checkoutProps.form.order_type).then().catch();
+
+            // Refresh time slots with the new order type to apply correct minimum time offset
+            this.$store.dispatch("frontendTimeSlot/today", { order_type: e }).then().catch();
+
             if (this.checkoutProps.form.order_type === orderTypeEnum.TAKEAWAY) {
                 this.mapShow = true;
                 if (!this.checkoutProps.form.branch_id) {

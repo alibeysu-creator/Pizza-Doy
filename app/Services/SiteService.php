@@ -67,4 +67,19 @@ class SiteService
             throw new Exception($exception->getMessage(), 422);
         }
     }
+
+    /**
+     * @throws Exception
+     */
+    public function restaurantStatus($request)
+    {
+        try {
+            Settings::group('site')->set(['site_restaurant_status' => (int)$request->site_restaurant_status]);
+            Artisan::call('optimize:clear');
+            return $this->list();
+        } catch (Exception $exception) {
+            Log::info($exception->getMessage());
+            throw new Exception($exception->getMessage(), 422);
+        }
+    }
 }

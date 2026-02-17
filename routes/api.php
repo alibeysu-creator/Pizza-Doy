@@ -188,6 +188,7 @@ Route::prefix('admin')->name('admin.')->middleware(['installed', 'apiKey', 'loca
         Route::prefix('site')->name('site.')->group(function () {
             Route::get('/', [SiteController::class, 'index']);
             Route::match(['put', 'patch'], '/', [SiteController::class, 'update']);
+            Route::post('/restaurant-status', [SiteController::class, 'restaurantStatus']);
         });
 
         Route::prefix('order-setup')->name('order-setup.')->group(function () {

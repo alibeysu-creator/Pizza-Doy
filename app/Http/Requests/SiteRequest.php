@@ -23,6 +23,12 @@ class SiteRequest extends FormRequest
      */
     public function rules(): array
     {
+        if ($this->has('site_restaurant_status') && count($this->all()) <= 2) {
+            return [
+                'site_restaurant_status' => ['required', 'numeric'],
+            ];
+        }
+
         return [
             'site_date_format'               => ['required', 'string', 'max:190'],
             'site_time_format'               => ['required', 'string', 'max:190'],
@@ -44,6 +50,7 @@ class SiteRequest extends FormRequest
             'site_online_payment_gateway'    => ['required', 'numeric'],
             'site_default_sms_gateway'       => ['nullable', 'numeric'],
             'site_guest_login'               => ['required', 'numeric'],
+            'site_restaurant_status'         => ['required', 'numeric'],
             'maintenance'                    => ['required', 'numeric'],
             "maintenance_message"              => ['nullable', 'string'],
 
