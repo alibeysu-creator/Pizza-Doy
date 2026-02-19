@@ -93,5 +93,7 @@ return [
         'out_of_service_area'         => 'Sorry, dit adres ligt buiten ons servicegebied',
         'kiosk_machine_not_found'     => 'De kioskmachine is niet gevonden',
         'already_logged_in'           => 'Al ingelogd op een ander apparaat. Meld u eerst af.',
+        'restaurant_opened'           => 'Restaurant ist jetzt geöffnet.',
+        'restaurant_closed'           => 'Restaurant ist jetzt geschlossen.',
     ]
 ];

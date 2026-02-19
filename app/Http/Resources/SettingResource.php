@@ -43,6 +43,7 @@ class SettingResource extends JsonResource
             'site_language_switch'                 => $this->info['site_language_switch'],
             'site_online_payment_gateway'          => $this->info['site_online_payment_gateway'],
             "site_guest_login"                     => $this->info['site_guest_login'],
+            "site_restaurant_status"               => $this->info['site_restaurant_status'] ?? 5,
             "maintenance"                          => $this->info['maintenance'],
             "maintenance_message"              => $this->info['maintenance_message'],
 

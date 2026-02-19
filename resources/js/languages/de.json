@@ -615,7 +615,9 @@
         "select_time_schedule": "Zeitplan auswählen",
         "machine_id": "Machine ID",
         "chef_kitchen": "Chef/Keuken",
-        "delivery_zone": "Bezorgzone"
+        "delivery_zone": "Bezorgzone",
+        "restaurant_status": "Restaurantstatus",
+        "closed": "Geschlossen"
     },
     "button": {
         "add": "Hinzufügen",
@@ -780,6 +782,10 @@
         "no_orders_found": "Je hebt nog geen bestellingen! Laten we iets lekkers beginnen.",
         "no_items_found": "Er zijn geen items gevonden die aan uw zoekopdracht voldoen! Probeer andere zoekwoorden.",
         "no_data_available": "Geen gegevens beschikbaar.",
-        "payment_method": "De betaalmethode is vereist."
+        "payment_method": "De betaalmethode is vereist.",
+        "restaurant_closed": "Das Restaurant ist geschlossen. Bitte versuchen Sie es später noch einmal.",
+        "restaurant_close": "Das Restaurant ist geschlossen.",
+        "restaurant_opened": "Das Restaurant ist geöffnet.",
+        "restaurant_status_updated": "Restaurantstatus erfolgreich aktualisiert."
     }
 }

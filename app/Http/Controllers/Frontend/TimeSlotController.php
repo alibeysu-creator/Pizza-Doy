@@ -17,18 +17,17 @@ class TimeSlotController extends Controller
         $this->frontendTimeSlotService = $frontendTimeSlotService;
     }
 
-    public function todayTimeSlot(
-    ) : \Illuminate\Http\Response | \Illuminate\Http\Resources\Json\AnonymousResourceCollection | \Illuminate\Contracts\Foundation\Application | \Illuminate\Contracts\Routing\ResponseFactory
+    public function todayTimeSlot(): \Illuminate\Http\Response | \Illuminate\Http\Resources\Json\AnonymousResourceCollection | \Illuminate\Contracts\Foundation\Application | \Illuminate\Contracts\Routing\ResponseFactory
     {
         try {
-            return FrontendTimeSlotResource::collection($this->frontendTimeSlotService->todayTimeSlot());
+            $orderType = request()->query('order_type');
+            return FrontendTimeSlotResource::collection($this->frontendTimeSlotService->todayTimeSlot($orderType));
         } catch (Exception $exception) {
             return response(['status' => false, 'message' => $exception->getMessage()], 422);
         }
     }
 
-    public function tomorrowTimeSlot(
-    ) : \Illuminate\Http\Response | \Illuminate\Http\Resources\Json\AnonymousResourceCollection | \Illuminate\Contracts\Foundation\Application | \Illuminate\Contracts\Routing\ResponseFactory
+    public function tomorrowTimeSlot(): \Illuminate\Http\Response | \Illuminate\Http\Resources\Json\AnonymousResourceCollection | \Illuminate\Contracts\Foundation\Application | \Illuminate\Contracts\Routing\ResponseFactory
     {
         try {
             return FrontendTimeSlotResource::collection($this->frontendTimeSlotService->tomorrowTimeSlot());

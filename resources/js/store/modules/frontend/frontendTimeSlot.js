@@ -6,7 +6,7 @@ export const frontendTimeSlot = {
     state: {
         today: [],
         tomorrow: [],
-        now: {}
+        now: {},
     },
     getters: {
         today: function (state) {
@@ -17,7 +17,7 @@ export const frontendTimeSlot = {
         },
         now: function (state) {
             return state.now;
-        }
+        },
     },
     actions: {
         today: function (context, payload) {
@@ -26,14 +26,20 @@ export const frontendTimeSlot = {
                 if (payload) {
                     url = url + appService.requestHandler(payload);
                 }
-                axios.get(url).then((res) => {
-                    if (typeof payload.vuex === "undefined" || payload.vuex === true) {
-                        context.commit("today", res.data.data);
-                    }
-                    resolve(res);
-                }).catch((err) => {
-                    reject(err);
-                });
+                axios
+                    .get(url)
+                    .then((res) => {
+                        if (
+                            typeof payload.vuex === "undefined" ||
+                            payload.vuex === true
+                        ) {
+                            context.commit("today", res.data.data);
+                        }
+                        resolve(res);
+                    })
+                    .catch((err) => {
+                        reject(err);
+                    });
             });
         },
         tomorrow: function (context, payload) {
@@ -42,21 +48,27 @@ export const frontendTimeSlot = {
                 if (payload) {
                     url = url + appService.requestHandler(payload);
                 }
-                axios.get(url).then((res) => {
-                    if (typeof payload.vuex === "undefined" || payload.vuex === true) {
-                        context.commit("tomorrow", res.data.data);
-                    }
+                axios
+                    .get(url)
+                    .then((res) => {
+                        if (
+                            typeof payload.vuex === "undefined" ||
+                            payload.vuex === true
+                        ) {
+                            context.commit("tomorrow", res.data.data);
+                        }
 
-                    resolve(res);
-                }).catch((err) => {
-                    reject(err);
-                });
+                        resolve(res);
+                    })
+                    .catch((err) => {
+                        reject(err);
+                    });
             });
-        }
+        },
     },
     mutations: {
         today: function (state, payload) {
-            if (payload.length > 0 && payload[0].label === 'now') {
+            if (payload.length > 0 && payload[0].label === "now") {
                 state.now = payload[0];
                 payload.shift();
             }
@@ -64,6 +76,6 @@ export const frontendTimeSlot = {
         },
         tomorrow: function (state, payload) {
             state.tomorrow = payload;
-        }
+        },
     },
 };

@@ -93,5 +93,7 @@ return [
         'out_of_service_area'         => 'عذراً، هذا العنوان خارج منطقة خدمتنا',
         'kiosk_machine_not_found'     => 'لم يتم العثور على جهاز الكشك',
         'already_logged_in'           => 'تم تسجيل الدخول بالفعل على جهاز آخر. يرجى تسجيل الخروج أولاً.',
+        'restaurant_opened'           => 'المطعم مفتوح الآن.',
+        'restaurant_closed'           => 'المطعم مغلق الآن.',
     ]
 ];

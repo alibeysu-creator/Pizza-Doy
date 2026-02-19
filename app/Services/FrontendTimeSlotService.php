@@ -18,7 +18,7 @@ class FrontendTimeSlotService
     /**
      * @throws Exception
      */
-    public function todayTimeSlot(): \Vanilla\Support\Collection | \IlluminateAgnostic\Str\Support\Collection | \IlluminateAgnostic\Collection\Support\Collection | \IlluminateAgnostic\StrAgnostic\Str\Support\Collection | \IlluminateAgnostic\ArrAgnostic\Arr\Support\Collection | \Illuminate\Support\Collection | \IlluminateAgnostic\Arr\Support\Collection
+    public function todayTimeSlot($orderType = null): \Vanilla\Support\Collection | \IlluminateAgnostic\Str\Support\Collection | \IlluminateAgnostic\Collection\Support\Collection | \IlluminateAgnostic\StrAgnostic\Str\Support\Collection | \IlluminateAgnostic\ArrAgnostic\Arr\Support\Collection | \Illuminate\Support\Collection | \IlluminateAgnostic\Arr\Support\Collection
     {
         try {
             $j                   = 0;
@@ -34,7 +34,8 @@ class FrontendTimeSlotService
                 $arrays = $this->todayTimeSlotCalculation(
                     $defaultScheduleTime,
                     $time['opening_time'],
-                    $time['closing_time']
+                    $time['closing_time'],
+                    $orderType
                 );
                 if (count($arrays)) {
                     foreach ($arrays as $array) {
@@ -90,34 +91,33 @@ class FrontendTimeSlotService
         }
     }
 
-    function todayTimeSlotCalculation($interval, $startTime, $endTime): array
+    function todayTimeSlotCalculation($interval, $startTime, $endTime, $orderType = null): array
     {
         $i              = 0;
         $time           = [];
         $strCurrentTime = strtotime(date('H:i'));
-        $strStartTime   = strtotime($startTime);
-        $strEndTime     = strtotime($endTime);
+
+        $minimumMinutes = 15;
+        if ($orderType == 5) {
+            $minimumMinutes = 50;
+        }
+        $strBaselineTime = max(strtotime($startTime), $strCurrentTime);
+        $strStartTime = strtotime('+' . $minimumMinutes . ' minutes', $strBaselineTime);
+        $strEndTime   = strtotime($endTime);
 
         while ($strStartTime < $strEndTime) {
             $convertStartTime = date('H:i', $strStartTime);
-            $convertEndTime   = date('H:i', strtotime('+' . $interval . ' minutes', $strStartTime));
+            $nextSlotTime     = strtotime('+' . $interval . ' minutes', $strStartTime);
+            $convertEndTime   = date('H:i', $nextSlotTime);
 
-            if ($strStartTime > $strCurrentTime && $strStartTime <= strtotime($endTime)) {
-                if (!$this->now) {
-                    $time[$i]['label']     = "now";
-                    $time[$i]['from_time'] = $convertStartTime;
-                    $time[$i]['to_time']   = $convertEndTime;
-                    $time[$i]['time']      = $convertStartTime . ' - ' . $convertEndTime;
-                    $this->now             = $time[$i];
-                } else {
-                    $time[$i]['label']     = AppLibrary::deliveryTime($convertStartTime . ' - ' . $convertEndTime);
-                    $time[$i]['from_time'] = $convertStartTime;
-                    $time[$i]['to_time']   = $convertEndTime;
-                    $time[$i]['time']      = $convertStartTime . ' - ' . $convertEndTime;
-                }
+            if ($strStartTime <= strtotime($endTime)) {
+                $time[$i]['label']     = AppLibrary::deliveryTime($convertStartTime . ' - ' . $convertEndTime);
+                $time[$i]['from_time'] = $convertStartTime;
+                $time[$i]['to_time']   = $convertEndTime;
+                $time[$i]['time']      = $convertStartTime . ' - ' . $convertEndTime;
                 $i++;
             }
-            $strStartTime = strtotime('+' . $interval . ' minutes', $strStartTime);
+            $strStartTime = $nextSlotTime;
         }
         return $time;
     }

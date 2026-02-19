@@ -23,7 +23,7 @@
         "deliveryBoys": "Delivery Boys",
         "coupons": "Coupons",
         "otp": "OTP",
-          "maintenance_message" :"Maintenance Message ",
+        "maintenance_message": "Maintenance Message ",
         "Maintenance": "Mantenance",
         "theme": "Theme",
         "time_slots": "Time Slots",
@@ -615,7 +615,9 @@
         "select_time_schedule": "Select Time Schedule",
         "machine_id": "Machine ID",
         "chef_kitchen": "Chef/Kitchen",
-        "delivery_zone": "Delivery Zone"
+        "delivery_zone": "Delivery Zone",
+        "restaurant_status": "Restaurant Status",
+        "closed": "Close"
     },
     "button": {
         "add": "Add",
@@ -780,6 +782,10 @@
         "no_orders_found": "You don't have any orders yet! Let's get something delicious started.",
         "no_items_found": "No items matched your search! Try different keywords.",
         "no_data_available": "No data available.",
-        "payment_method": "The payment method is required."
+        "payment_method": "The payment method is required.",
+        "restaurant_closed": "The restaurant is closed. Please try again later.",
+        "restaurant_close": "The restaurant is closed.",
+        "restaurant_opened": "The restaurant is open.",
+        "restaurant_status_updated": "Restaurant status updated successfully."
     }
 }

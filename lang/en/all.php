@@ -94,5 +94,7 @@ return [
         'out_of_service_area'         => 'Sorry, this address is outside of our service area.',
         'kiosk_machine_not_found'     => 'The Kiosk machine not found.',
         'already_logged_in'           => 'Already logged in on another device. Please logout first.',
+        'restaurant_opened'           => 'Restaurant is now open.',
+        'restaurant_closed'           => 'Restaurant is now closed.',
     ]
 ];

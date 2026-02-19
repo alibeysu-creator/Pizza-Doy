@@ -38,6 +38,19 @@ export const site = {
                     });
             });
         },
+        restaurantStatus: function (context, payload) {
+            return new Promise((resolve, reject) => {
+                axios
+                    .post(`admin/setting/site/restaurant-status`, payload)
+                    .then((res) => {
+                        context.commit("lists", res.data.data);
+                        resolve(res);
+                    })
+                    .catch((err) => {
+                        reject(err);
+                    });
+            });
+        },
     },
     mutations: {
         lists: function (state, payload) {
