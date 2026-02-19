@@ -71,7 +71,7 @@
                                         <i class="icon-location1 mt-0.5"></i>
                                         <span v-if="address.apartment">{{ address.apartment }}, {{
                                             address.address
-                                        }}</span>
+                                            }}</span>
                                         <span v-else>{{ address.address }}</span>
                                     </div>
                                 </label>
@@ -127,7 +127,7 @@
                         <div class="p-4 border-b">
                             <h3 class="capitalize font-medium mb-3 text-center">{{
                                 $t('label.cart_summary')
-                                }}</h3>
+                            }}</h3>
                             <div class="flex items-center rounded-2xl w-fit mx-auto mb-6 text-[#008BBA] bg-[#BDEFFF]">
                                 <div v-if="setting.order_setup_delivery === activityEnum.ENABLE"
                                     class="relative cursor-pointer">
@@ -888,6 +888,11 @@ export default {
                 this.loading.isActive = false;
                 if (res.data.data.site_restaurant_status == activityEnum.DISABLE) {
                     alertService.error(this.$t('message.restaurant_closed'));
+                    return;
+                }
+
+                if (this.checkoutProps.form.order_type === orderTypeEnum.DELIVERY && this.subtotal < 17) {
+                    alertService.error("The minimum order value is 17 €");
                     return;
                 }
                 this.showPaymentDialog = true;

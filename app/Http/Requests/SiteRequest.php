@@ -25,7 +25,7 @@ class SiteRequest extends FormRequest
     {
         if ($this->has('site_restaurant_status') && count($this->all()) <= 2) {
             return [
-                'site_restaurant_status' => ['required', 'numeric'],
+                'site_restaurant_status' => ['nullable', 'numeric'],
             ];
         }
 
@@ -50,7 +50,7 @@ class SiteRequest extends FormRequest
             'site_online_payment_gateway'    => ['required', 'numeric'],
             'site_default_sms_gateway'       => ['nullable', 'numeric'],
             'site_guest_login'               => ['required', 'numeric'],
-            'site_restaurant_status'         => ['required', 'numeric'],
+            'site_restaurant_status'         => ['nullable', 'numeric'],
             'maintenance'                    => ['required', 'numeric'],
             "maintenance_message"              => ['nullable', 'string'],
 
