@@ -25,8 +25,9 @@ class OrderSetupResource extends JsonResource
     public function toArray($request): array
     {
         return [
-            "order_setup_food_preparation_time"        => $this->info['order_setup_food_preparation_time'],
-            "order_setup_schedule_order_slot_duration" => $this->info['order_setup_schedule_order_slot_duration'],
+            "order_setup_food_preparation_time"        => $this->info['order_setup_food_preparation_time'] ?? null,
+            "order_setup_schedule_order_slot_duration" => $this->info['order_setup_schedule_order_slot_duration'] ?? null,
+            "order_setup_delivery_schedule_order_slot_duration" => $this->info['order_setup_delivery_schedule_order_slot_duration'] ?? null,
             "order_setup_takeaway"                     => $this->info['order_setup_takeaway'],
             "order_setup_delivery"                     => $this->info['order_setup_delivery'],
             "order_setup_free_delivery_kilometer"      => $this->info['order_setup_free_delivery_kilometer'],

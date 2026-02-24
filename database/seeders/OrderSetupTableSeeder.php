@@ -18,7 +18,8 @@ class OrderSetupTableSeeder extends Seeder
     {
         Settings::group('order_setup')->set([
             'order_setup_food_preparation_time'        => "30",
-            'order_setup_schedule_order_slot_duration' => "30",
+            'order_setup_schedule_order_slot_duration' => "15",
+            'order_setup_delivery_schedule_order_slot_duration' => "50",
             'order_setup_takeaway'                     => Activity::ENABLE,
             'order_setup_delivery'                     => Activity::ENABLE,
             'order_setup_free_delivery_kilometer'      => "2",

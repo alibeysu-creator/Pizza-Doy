@@ -21,7 +21,7 @@
                                 id="order_setup_food_preparation_time" class="db-field-control" />
                             <small class="db-field-alert" v-if="errors.order_setup_food_preparation_time">{{
                                 errors.order_setup_food_preparation_time[0]
-                            }}</small>
+                                }}</small>
                         </div>
 
                         <div class="form-col-12 sm:form-col-6">
@@ -35,7 +35,24 @@
                                 type="text" id="order_setup_schedule_order_slot_duration" class="db-field-control" />
                             <small class="db-field-alert" v-if="errors.order_setup_schedule_order_slot_duration">{{
                                 errors.order_setup_schedule_order_slot_duration[0]
-                            }}</small>
+                                }}</small>
+                        </div>
+
+                        <div class="form-col-12 sm:form-col-6">
+                            <label for="order_setup_delivery_schedule_order_slot_duration"
+                                class="db-field-title required">
+                                {{ $t("label.delivery_schedule_order_slot_duration") }}
+                                <span class="text-primary">{{ $t("label.in_minute") }}</span>
+                            </label>
+                            <input v-on:keypress="floatNumber($event)"
+                                v-model="form.order_setup_delivery_schedule_order_slot_duration"
+                                v-bind:class="errors.order_setup_delivery_schedule_order_slot_duration ? 'invalid' : ''"
+                                type="text" id="order_setup_delivery_schedule_order_slot_duration"
+                                class="db-field-control" />
+                            <small class="db-field-alert"
+                                v-if="errors.order_setup_delivery_schedule_order_slot_duration">{{
+                                    errors.order_setup_delivery_schedule_order_slot_duration[0]
+                                }}</small>
                         </div>
 
                         <div class="form-col-12 sm:form-col-6">
@@ -60,7 +77,7 @@
                             </div>
                             <small class="db-field-alert" v-if="errors.order_setup_takeaway">{{
                                 errors.order_setup_takeaway[0]
-                            }}</small>
+                                }}</small>
                         </div>
 
                         <div class="form-col-12 sm:form-col-6">
@@ -85,7 +102,7 @@
                             </div>
                             <small class="db-field-alert" v-if="errors.order_setup_delivery">{{
                                 errors.order_setup_delivery[0]
-                            }}</small>
+                                }}</small>
                         </div>
                     </div>
                 </fieldset>
@@ -104,7 +121,7 @@
                                 id="order_setup_free_delivery_kilometer" class="db-field-control" />
                             <small class="db-field-alert" v-if="errors.order_setup_free_delivery_kilometer">{{
                                 errors.order_setup_free_delivery_kilometer[0]
-                            }}</small>
+                                }}</small>
                         </div>
                         <div class="form-col-12 sm:form-col-6">
                             <label for="order_setup_basic_delivery_charge" class="db-field-title required">
@@ -115,7 +132,7 @@
                                 id="order_setup_basic_delivery_charge" class="db-field-control" />
                             <small class="db-field-alert" v-if="errors.order_setup_basic_delivery_charge">{{
                                 errors.order_setup_basic_delivery_charge[0]
-                            }}</small>
+                                }}</small>
                         </div>
                         <div class="form-col-12 sm:form-col-6">
                             <label for="order_setup_charge_per_kilo" class="db-field-title required">
@@ -126,7 +143,7 @@
                                 id="order_setup_charge_per_kilo" class="db-field-control" />
                             <small class="db-field-alert" v-if="errors.order_setup_charge_per_kilo">{{
                                 errors.order_setup_charge_per_kilo[0]
-                            }}</small>
+                                }}</small>
                         </div>
                     </div>
                 </fieldset>
@@ -157,6 +174,7 @@ export default {
             form: {
                 order_setup_food_preparation_time: null,
                 order_setup_schedule_order_slot_duration: null,
+                order_setup_delivery_schedule_order_slot_duration: null,
                 order_setup_takeaway: null,
                 order_setup_delivery: null,
                 order_setup_free_delivery_kilometer: null,
@@ -178,6 +196,7 @@ export default {
                 this.form = {
                     order_setup_food_preparation_time: res.data.data.order_setup_food_preparation_time,
                     order_setup_schedule_order_slot_duration: res.data.data.order_setup_schedule_order_slot_duration,
+                    order_setup_delivery_schedule_order_slot_duration: res.data.data.order_setup_delivery_schedule_order_slot_duration,
                     order_setup_takeaway: res.data.data.order_setup_takeaway,
                     order_setup_delivery: res.data.data.order_setup_delivery,
                     order_setup_free_delivery_kilometer: res.data.data.order_setup_free_delivery_kilometer,

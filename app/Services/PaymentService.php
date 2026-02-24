@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\Ask;
 use App\Enums\PaymentStatus;
 use App\Models\Transaction;
 use App\Models\User;
@@ -23,13 +24,10 @@ class PaymentService
             ]);
         }
         $order->payment_status = PaymentStatus::PAID;
-        
-      
-
+        $order->active = Ask::YES;  
         $order->save();
-           $controller = app(MyOrderDetailsController::class);
-
-           $controller->sendOrderReceipt($order->id);
+        $controller = app(MyOrderDetailsController::class);
+        $controller->sendOrderReceipt($order->id);
         return $transaction;
     }
 

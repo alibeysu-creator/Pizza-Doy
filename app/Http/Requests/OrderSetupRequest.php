@@ -26,6 +26,7 @@ class OrderSetupRequest extends FormRequest
         return [
             'order_setup_food_preparation_time'        => ['required', 'numeric'],
             'order_setup_schedule_order_slot_duration' => ['required', 'numeric'],
+            'order_setup_delivery_schedule_order_slot_duration' => ['required', 'numeric'],
             'order_setup_takeaway'                     => ['required', 'numeric'],
             'order_setup_delivery'                     => ['required', 'numeric'],
             'order_setup_free_delivery_kilometer'      => ['required', 'numeric'],

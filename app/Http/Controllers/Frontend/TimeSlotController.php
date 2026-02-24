@@ -30,7 +30,8 @@ class TimeSlotController extends Controller
     public function tomorrowTimeSlot(): \Illuminate\Http\Response | \Illuminate\Http\Resources\Json\AnonymousResourceCollection | \Illuminate\Contracts\Foundation\Application | \Illuminate\Contracts\Routing\ResponseFactory
     {
         try {
-            return FrontendTimeSlotResource::collection($this->frontendTimeSlotService->tomorrowTimeSlot());
+            $orderType = request()->query('order_type');
+            return FrontendTimeSlotResource::collection($this->frontendTimeSlotService->tomorrowTimeSlot($orderType));
         } catch (Exception $exception) {
             return response(['status' => false, 'message' => $exception->getMessage()], 422);
         }

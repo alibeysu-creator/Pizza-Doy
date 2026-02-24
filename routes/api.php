@@ -125,7 +125,7 @@ Route::match(['get', 'post'], '/login', function () {
 Route::match(['get', 'post'], '/refresh-token', [RefreshTokenController::class, 'refreshToken'])->middleware(['installed']);
 
 Route::prefix('auth')->middleware(['installed', 'apiKey', 'localization'])->name('auth.')->namespace('Auth')->group(function () {
-         Route::post('/loginFromApp', [DeliveryBoyController::class, 'storeFromApp']);
+    Route::post('/loginFromApp', [DeliveryBoyController::class, 'storeFromApp']);
 
     Route::post('/login', [LoginController::class, 'login']);
 
@@ -743,6 +743,7 @@ Route::prefix('frontend')->name('frontend.')->middleware(['installed', 'apiKey',
         Route::get('/', [FrontendOrderController::class, 'index']);
         Route::get('/show/{frontendOrder}', [FrontendOrderController::class, 'show']);
         Route::post('/', [FrontendOrderController::class, 'store']);
+        Route::post('/temp-store', [FrontendOrderController::class, 'tempStore']);
         Route::post('/change-status/{frontendOrder}', [FrontendOrderController::class, 'changeStatus']);
     });
 

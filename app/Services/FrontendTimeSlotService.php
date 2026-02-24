@@ -26,7 +26,12 @@ class FrontendTimeSlotService
             $today               = Carbon::now()->dayOfWeek;
             $defaultScheduleTime = 30;
             $todayTimes          = TimeSlot::select('opening_time', 'closing_time')->where(['day' => $today])->orderBy('opening_time', 'asc')->get()->toArray();
-            $orderSetup          = Settings::group('order_setup')->get('order_setup_schedule_order_slot_duration');
+
+            if ($orderType == \App\Enums\OrderType::DELIVERY) {
+                $orderSetup = Settings::group('order_setup')->get('order_setup_delivery_schedule_order_slot_duration');
+            } else {
+                $orderSetup = Settings::group('order_setup')->get('order_setup_schedule_order_slot_duration');
+            }
             if (!empty($orderSetup)) {
                 $defaultScheduleTime = (int)$orderSetup;
             }
@@ -54,7 +59,7 @@ class FrontendTimeSlotService
     /**
      * @throws Exception
      */
-    public function tomorrowTimeSlot(): \Vanilla\Support\Collection | \IlluminateAgnostic\Str\Support\Collection | \IlluminateAgnostic\Collection\Support\Collection | \IlluminateAgnostic\StrAgnostic\Str\Support\Collection | \IlluminateAgnostic\ArrAgnostic\Arr\Support\Collection | \Illuminate\Support\Collection | \IlluminateAgnostic\Arr\Support\Collection
+    public function tomorrowTimeSlot($orderType = null): \Vanilla\Support\Collection | \IlluminateAgnostic\Str\Support\Collection | \IlluminateAgnostic\Collection\Support\Collection | \IlluminateAgnostic\StrAgnostic\Str\Support\Collection | \IlluminateAgnostic\ArrAgnostic\Arr\Support\Collection | \Illuminate\Support\Collection | \IlluminateAgnostic\Arr\Support\Collection
     {
         try {
             $tomorrow            = Carbon::tomorrow()->dayOfWeek;
@@ -65,7 +70,12 @@ class FrontendTimeSlotService
                 'id',
                 'asc'
             )->get()->toArray();
-            $orderSetup          = Settings::group('order_setup')->get('order_setup_schedule_order_slot_duration');
+
+            if ($orderType == \App\Enums\OrderType::DELIVERY) {
+                $orderSetup = Settings::group('order_setup')->get('order_setup_delivery_schedule_order_slot_duration');
+            } else {
+                $orderSetup = Settings::group('order_setup')->get('order_setup_schedule_order_slot_duration');
+            }
 
             if (!empty($orderSetup)) {
                 $defaultScheduleTime = (int)$orderSetup;
@@ -93,28 +103,32 @@ class FrontendTimeSlotService
 
     function todayTimeSlotCalculation($interval, $startTime, $endTime, $orderType = null): array
     {
-        $i              = 0;
-        $time           = [];
+        $time   = [];
         $strCurrentTime = strtotime(date('H:i'));
 
         $minimumMinutes = 15;
-        if ($orderType == 5) {
+        if ($orderType == \App\Enums\OrderType::DELIVERY) {
             $minimumMinutes = 50;
         }
-        $strBaselineTime = max(strtotime($startTime), $strCurrentTime);
-        $strStartTime = strtotime('+' . $minimumMinutes . ' minutes', $strBaselineTime);
+
+        $strStartTime = strtotime($startTime);
         $strEndTime   = strtotime($endTime);
 
-        while ($strStartTime < $strEndTime) {
+        $strAvailableFrom = strtotime('+' . $minimumMinutes . ' minutes', $strCurrentTime);
+
+        $strStartTime = strtotime('+' . $interval . ' minutes', $strStartTime);
+
+        $i = 0;
+        while ($strStartTime <= $strEndTime) {
             $convertStartTime = date('H:i', $strStartTime);
             $nextSlotTime     = strtotime('+' . $interval . ' minutes', $strStartTime);
             $convertEndTime   = date('H:i', $nextSlotTime);
 
-            if ($strStartTime <= strtotime($endTime)) {
-                $time[$i]['label']     = AppLibrary::deliveryTime($convertStartTime . ' - ' . $convertEndTime);
+            if ($strStartTime >= $strAvailableFrom) {
+                $time[$i]['label']     = str_replace(':', '.', $convertStartTime);
                 $time[$i]['from_time'] = $convertStartTime;
                 $time[$i]['to_time']   = $convertEndTime;
-                $time[$i]['time']      = $convertStartTime . ' - ' . $convertEndTime;
+                $time[$i]['time']      = $convertStartTime;
                 $i++;
             }
             $strStartTime = $nextSlotTime;
@@ -129,18 +143,20 @@ class FrontendTimeSlotService
         $strStartTime = strtotime($startTime);
         $strEndTime   = strtotime($endTime);
 
-        while ($strStartTime < $strEndTime) {
-            $convertStartTime = date('H:i', $strStartTime);
-            $convertEndTime   = date('H:i', strtotime('+' . $interval . ' minutes', $strStartTime));
+        $strStartTime = strtotime('+' . $interval . ' minutes', $strStartTime);
 
-            if ($strStartTime <= strtotime($endTime)) {
-                $time[$i]['label']     = AppLibrary::deliveryTime($convertStartTime . ' - ' . $convertEndTime);
-                $time[$i]['from_time'] = $convertStartTime;
-                $time[$i]['to_time']   = $convertEndTime;
-                $time[$i]['time']      = $convertStartTime . ' - ' . $convertEndTime;
-                $i++;
-            }
-            $strStartTime = strtotime('+' . $interval . ' minutes', $strStartTime);
+        while ($strStartTime <= $strEndTime) {
+            $convertStartTime = date('H:i', $strStartTime);
+            $nextSlotTime     = strtotime('+' . $interval . ' minutes', $strStartTime);
+            $convertEndTime   = date('H:i', $nextSlotTime);
+
+            $time[$i]['label']     = str_replace(':', '.', $convertStartTime);
+            $time[$i]['from_time'] = $convertStartTime;
+            $time[$i]['to_time']   = $convertEndTime;
+            $time[$i]['time']      = $convertStartTime;
+            $i++;
+
+            $strStartTime = $nextSlotTime;
         }
         return $time;
     }

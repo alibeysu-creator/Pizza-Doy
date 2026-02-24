@@ -352,7 +352,7 @@
         "delivery_address": "ডেলিভারির ঠিকানা",
         "apartment_and_flat": "অ্যাপার্টমেন্ট ও ফ্ল্যাট নম্বর",
         "type_label_name": "লেবেলের নাম লিখুন...",
-        "select_apply": "অফার নির্বাচন করুন/কুপন প্রয়োগ করুন",
+        "select_apply": "অফার নির্বাচন করুন\/কুপন প্রয়োগ করুন",
         "all_offers": "সমস্ত অফার",
         "google_map_key": "গুগল ম্যাপ কী",
         "android_app_link": "অ্যান্ড্রয়েড অ্যাপ লিঙ্ক",
@@ -534,7 +534,7 @@
         "table": "টেবিল",
         "inside": "ভিতরে",
         "dining_table": "ডাইনিং টেবিল",
-        "cash_card": "নগদ/কার্ড",
+        "cash_card": "নগদ\/কার্ড",
         "digital_payment": "ডিজিটাল পেমেন্ট",
         "table_name": "টেবিলের নাম",
         "telr_store_id": "টেলার স্টোর আইডি",
@@ -612,8 +612,10 @@
         "choose_a_time": "একটি সময় নির্বাচন করুন",
         "select_time_schedule": "সময়সূচী নির্বাচন করুন",
         "machine_id": "মেশিন আইডি",
-        "chef_kitchen": "শেফ/রান্নাঘর",
-        "delivery_zone": "ডেলিভারি জোন"
+        "chef_kitchen": "শেফ\/রান্নাঘর",
+        "delivery_zone": "ডেলিভারি জোন",
+        "select_payment_method": "Select Payment Method",
+        "proceed": "Proceed"
     },
     "button": {
         "add": "যোগ করুন",

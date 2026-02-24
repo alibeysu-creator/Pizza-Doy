@@ -25,7 +25,7 @@ class KDSOrderDetailsResource extends JsonResource
             'order_date'                          => AppLibrary::date($this->order_datetime),
             'order_time'                          => AppLibrary::time($this->order_datetime),
             'delivery_date'                       => $this->is_advance_order == Ask::YES ? AppLibrary::increaseDate($this->order_datetime, 1) : AppLibrary::date($this->order_datetime),
-            'delivery_time'                       => $this->is_advance_order == Ask::YES ? AppLibrary::deliveryTime($this->delivery_time) : AppLibrary::deliveryTimeCheck($this->delivery_time),
+            'delivery_time'                       => $this->is_advance_order == Ask::YES ? AppLibrary::deliveryTime($this->delivery_time) : AppLibrary::deliveryTimeCheck($this->delivery_time, null, $this->order_type),
             'is_advance_order'                    => $this->is_advance_order,
             'preparation_time'                    => $this->preparation_time,
             'status'                              => $this->status,
