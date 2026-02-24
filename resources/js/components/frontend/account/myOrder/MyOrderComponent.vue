@@ -31,7 +31,7 @@
                                     </div>
                                     <p class="text-xs font-light font-rubik mb-1">{{
                                         activeOrder.order_datetime
-                                        }}
+                                    }}
                                     </p>
                                     <p class="text-sm font-normal font-rubik capitalize mb-2 text-[#00749B]">
                                         {{ enums.orderTypeEnumArray[activeOrder.order_type] }}
@@ -39,7 +39,7 @@
                                     <div class="flex flex-wrap gap-3 items-center justify-between">
                                         <p class="text-sm leading-6 font-rubik capitalize text-heading">{{
                                             $t("label.total")
-                                            }}: <span class="font-medium">{{ activeOrder.total_currency_price }}</span>
+                                        }}: <span class="font-medium">{{ activeOrder.total_currency_price }}</span>
                                         </p>
                                         <router-link
                                             :to="{ name: 'frontend.myOrder.details', params: { id: activeOrder.id } }"
@@ -74,14 +74,14 @@
                                 </div>
                                 <p class="text-xs font-light font-rubik mb-1">{{
                                     previousOrder.order_datetime
-                                    }}</p>
+                                }}</p>
                                 <p class="text-sm font-normal font-rubik capitalize mb-2 text-[#00749B]">
                                     {{ enums.orderTypeEnumArray[previousOrder.order_type] }}
                                 </p>
                                 <div class="flex flex-wrap gap-3 items-center justify-between">
                                     <p class="text-sm leading-6 font-rubik capitalize text-heading">{{
                                         $t("label.total")
-                                        }}:
+                                    }}:
                                         <span class="font-medium">{{ previousOrder.total_currency_price }}</span>
                                     </p>
                                     <router-link
@@ -259,6 +259,7 @@ export default {
             this.previousOrderList();
 
             if (Object.keys(this.$route.query).length > 0) {
+                this.$store.dispatch('frontendCart/resetCart');
                 this.loading.isActive = true;
                 this.$store.dispatch('frontendOrder/show', this.$route.query.id).then(res => {
                     const modalTarget = this.$refs.confirmOrder;
