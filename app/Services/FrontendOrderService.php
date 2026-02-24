@@ -8,6 +8,7 @@ use App\Events\SendOrderGotSms;
 use Exception;
 use App\Models\Tax;
 use App\Models\Item;
+use App\Enums\Ask;
 use App\Enums\TaxType;
 use App\Models\Address;
 use App\Enums\OrderType;
@@ -20,6 +21,9 @@ use App\Events\SendOrderMail;
 use App\Events\SendOrderPush;
 use App\Libraries\AppLibrary;
 use App\Models\FrontendOrder;
+use App\Models\Transaction;
+use App\Models\CapturePaymentNotification;
+use App\Enums\Status;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\OrderRequest;
 use Illuminate\Support\Facades\Log;
@@ -63,7 +67,7 @@ class FrontendOrderService
             $frontendOrderColumn = $request->get('order_column') ?? 'id';
             $frontendOrderType = $request->get('order_by') ?? 'desc';
 
-            return FrontendOrder::with('transaction', 'orderItems', 'branch', 'user')->where('order_type', "!=", OrderType::POS)->where(function ($query) use ($requests) {
+            return FrontendOrder::with('transaction', 'orderItems', 'branch', 'user')->where('order_type', "!=", OrderType::POS)->where('active', Status::ACTIVE)->where(function ($query) use ($requests) {
                 $query->where('user_id', auth()->user()->id);
                 foreach ($requests as $key => $request) {
                     if (in_array($key, $this->frontendOrderFilter)) {
@@ -97,12 +101,19 @@ class FrontendOrderService
     public function myOrderStore(OrderRequest $request): object
     {
 
-       
-
-        
-
         try {
             DB::transaction(function () use ($request) {
+                $oldOrder = FrontendOrder::where(['user_id' => Auth::user()->id, 'active' => Status::INACTIVE]);
+                if (!blank($oldOrder->get())) {
+                    $ids = $oldOrder->pluck('id');
+                    Transaction::whereIn('order_id', $ids)->delete();
+                    CapturePaymentNotification::whereIn('order_id', $ids)->delete();
+                    OrderCoupon::whereIn('order_id', $ids)->where(['user_id' => Auth::user()->id])?->delete();
+                    OrderAddress::whereIn('order_id', $ids)->where(['user_id' => Auth::user()->id])?->delete();
+                    OrderItem::whereIn('order_id', $ids)->delete();
+                    $oldOrder->delete();
+                }
+
                 $this->frontendOrder = FrontendOrder::create(
                     $request->validated() + [
                         'user_id'          => Auth::user()->id,
@@ -111,6 +122,11 @@ class FrontendOrderService
                         'preparation_time' => Settings::group('order_setup')->get('order_setup_food_preparation_time')
                     ]
                 );
+
+                if ($request->payment_method === 'cod') {
+                    $this->frontendOrder->active = Ask::YES;
+                    $this->frontendOrder->save();
+                }
 
                 $i = 0;
                 $totalTax = 0;
@@ -180,12 +196,12 @@ class FrontendOrderService
                         'discount'  => $request->discount
                     ]);
                 }
-                 SendOrderMail::dispatch(['order_id' => $this->frontendOrder->id, 'status' => OrderStatus::PENDING]);
+                SendOrderMail::dispatch(['order_id' => $this->frontendOrder->id, 'status' => OrderStatus::PENDING]);
                 SendOrderSms::dispatch(['order_id' => $this->frontendOrder->id, 'status' => OrderStatus::PENDING]);
                 SendOrderPush::dispatch(['order_id' => $this->frontendOrder->id, 'status' => OrderStatus::PENDING]);
                 $controller = app(MyOrderDetailsController::class);
-                
-                 $controller->sendOrderReceipt($this->frontendOrder->id);
+
+                $controller->sendOrderReceipt($this->frontendOrder->id);
 
 
 

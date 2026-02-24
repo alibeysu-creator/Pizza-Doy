@@ -352,7 +352,7 @@
         "delivery_address": "عنوان التوصيل",
         "apartment_and_flat": "رقم الشقة والشقة",
         "type_label_name": "اكتب اسم العلامة...",
-        "select_apply": "اختر العرض/قدم الكوبون",
+        "select_apply": "اختر العرض\/قدم الكوبون",
         "all_offers": "جميع العروض",
         "google_map_key": "مفتاح خرائط Google",
         "android_app_link": "رابط تطبيق Android",
@@ -533,7 +533,7 @@
         "table": "الطاولة",
         "inside": "داخل",
         "dining_table": "طاولة الطعام",
-        "cash_card": "نقد/بطاقة",
+        "cash_card": "نقد\/بطاقة",
         "digital_payment": "الدفع الرقمي",
         "table_name": "اسم الطاولة",
         "subject": "الموضوع",
@@ -611,8 +611,10 @@
         "choose_a_time": "اختر وقتًا",
         "select_time_schedule": "حدد جدول الوقت",
         "machine_id": "معرّف الآلة",
-        "chef_kitchen": "الشيف/المطبخ",
-        "delivery_zone": "منطقة التسليم"
+        "chef_kitchen": "الشيف\/المطبخ",
+        "delivery_zone": "منطقة التسليم",
+        "select_payment_method": "Select Payment Method",
+        "proceed": "Proceed"
     },
     "button": {
         "add": "إضافة",

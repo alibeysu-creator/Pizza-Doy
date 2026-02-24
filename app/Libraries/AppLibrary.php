@@ -385,7 +385,7 @@ class AppLibrary
         return $text;
     }
 
-    public static function deliveryTimeCheck($dateTime, $pattern = null): string
+    public static function deliveryTimeCheck($dateTime, $pattern = null, $orderType = null): string
     {
         if ($dateTime) {
             [$startTime, $endTime] = explode(' - ', $dateTime);
@@ -395,7 +395,11 @@ class AppLibrary
             $endTimeObj = DateTime::createFromFormat('H:i', $endTime);
 
             if ($startTimeObj && $endTimeObj) {
-                $slotDuration = Settings::group('order_setup')->get('order_setup_schedule_order_slot_duration') ?? 30;
+                if ($orderType == \App\Enums\OrderType::DELIVERY) {
+                    $slotDuration = Settings::group('order_setup')->get('order_setup_delivery_schedule_order_slot_duration') ?? 30;
+                } else {
+                    $slotDuration = Settings::group('order_setup')->get('order_setup_schedule_order_slot_duration') ?? 30;
+                }
                 $thirtyMinutesBefore = (clone $startTimeObj)->sub(new DateInterval('PT' . $slotDuration . 'M'));
 
                 if ($currentTime >= $thirtyMinutesBefore && $currentTime <= $endTimeObj) {

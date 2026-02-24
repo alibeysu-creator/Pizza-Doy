@@ -71,7 +71,7 @@
                                         <i class="icon-location1 mt-0.5"></i>
                                         <span v-if="address.apartment">{{ address.apartment }}, {{
                                             address.address
-                                            }}</span>
+                                        }}</span>
                                         <span v-else>{{ address.address }}</span>
                                     </div>
                                 </label>
@@ -127,7 +127,7 @@
                         <div class="p-4 border-b">
                             <h3 class="capitalize font-medium mb-3 text-center">{{
                                 $t('label.cart_summary')
-                            }}</h3>
+                                }}</h3>
                             <div class="flex items-center rounded-2xl w-fit mx-auto mb-6 text-[#008BBA] bg-[#BDEFFF]">
                                 <div v-if="setting.order_setup_delivery === activityEnum.ENABLE"
                                     class="relative cursor-pointer">
@@ -334,18 +334,61 @@
         </div>
     </div>
 
-    <div v-if="showPaymentDialog" class="payment-modal">
-        <div>
-            <h3>Zahlungsmethode auswählen</h3>
-            <div v-for="option in paymentOptions" :key="option.value">
-                <label>
-                    <input type="radio" v-model="paymentMethod" :value="option.value">
-                    {{ option.label }}
-                </label>
+    <!-- PAYMENT METHOD MODAL -->
+    <div id="payment-method-modal" class="modal">
+        <div class="modal-dialog">
+            <div class="flex items-center justify-between gap-4 py-3.5 px-4 border-b border-slate-100">
+                <h3 class="text-lg font-semibold capitalize">{{ $t('label.select_payment_method') }}</h3>
+                <button class="modal-close fa-regular fa-circle-xmark" @click="resetPaymentModal"></button>
             </div>
-            <div style="margin-top: 15px;">
-                <button class="payment-btn green" @click="confirmPaymentMethod">Weiter</button>
-                <button class="payment-btn red" @click="showPaymentDialog = false">Abbrechen</button>
+
+            <div class="p-4">
+                <div class="grid grid-cols-1 gap-3 active-group">
+
+                    <label :class="paymentMethod === 'cod' ? 'active' : ''" @click="paymentMethod = 'cod'"
+                        class="p-3 rounded-lg w-full border border-[#F7F7FC] bg-[#F7F7FC] cursor-pointer">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2 text-xs text-[#008BBA]">
+                                <i class="lab lab-money-bill text-lg"></i>
+                                <span class="font-medium">{{ $t('label.cash_on_delivery') }}</span>
+                            </div>
+                            <div class="custom-radio sm">
+                                <input type="radio" class="custom-radio-field" v-model="paymentMethod" value="cod">
+                                <span class="custom-radio-span"></span>
+                            </div>
+                        </div>
+                    </label>
+
+                    <label :class="paymentMethod === 'online' ? 'active' : ''" @click="paymentMethod = 'online'"
+                        class="p-3 rounded-lg w-full border border-[#F7F7FC] bg-[#F7F7FC] cursor-pointer">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2 text-xs text-[#008BBA]">
+                                <i class="lab lab-card-send text-lg"></i>
+                                <span class="font-medium">{{ $t('button.pay_now') }}</span>
+                            </div>
+                            <div class="custom-radio sm">
+                                <input type="radio" class="custom-radio-field" v-model="paymentMethod" value="online">
+                                <span class="custom-radio-span"></span>
+                            </div>
+                        </div>
+                    </label>
+
+                </div>
+
+                <div class="mt-4 flex justify-end gap-3">
+                    <button type="button"
+                        class="flex items-center text-sm font-medium py-2 px-4 rounded-3xl border border-gray-200 hover:bg-gray-100"
+                        @click="resetPaymentModal">
+                        {{ $t('button.cancel') }}
+                    </button>
+
+                    <button type="button"
+                        class="flex items-center text-sm font-medium py-2 px-4 rounded-3xl text-white bg-primary"
+                        :disabled="!paymentMethod" :class="{ 'opacity-50 cursor-not-allowed': !paymentMethod }"
+                        @click="confirmPaymentMethod">
+                        {{ $t('label.proceed') }}
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -456,7 +499,7 @@ export default {
             },
 
             paymentMethod: null,
-            showPaymentDialog: false,
+            showPaymentModal: false,
             paymentOptions: [
                 { label: 'Barzahlung', value: 'cod' },
                 { label: 'Kreditkarte', value: 'card' },
@@ -697,14 +740,24 @@ export default {
 
         this.$store.dispatch("frontendTimeSlot/today", { order_type: this.checkoutProps.form.order_type }).then(res => {
             this.loading.isActive = false;
-            this.checkoutProps.form.is_advance_order = isAdvanceOrderEnum.NO
+            this.checkoutProps.form.is_advance_order = isAdvanceOrderEnum.NO;
+
+            if (!this.localDeliveryTimeLabel && this.todayTimeSlots.length > 0) {
+                this.scheduleTab = this.dayTakeEnum.TODAY;
+                this.selectDeliveryTime(this.todayTimeSlots[0]);
+            }
         }).catch((err) => {
             this.loading.isActive = false;
         });
 
         this.loading.isActive = true;
-        this.$store.dispatch("frontendTimeSlot/tomorrow", {}).then(res => {
+        this.$store.dispatch("frontendTimeSlot/tomorrow", { order_type: this.checkoutProps.form.order_type }).then(res => {
             this.loading.isActive = false;
+
+            if (!this.localDeliveryTimeLabel && this.todayTimeSlots.length === 0 && this.tomorrowTimeSlots.length > 0) {
+                this.scheduleTab = this.dayTakeEnum.TOMORROW;
+                this.selectDeliveryTime(this.tomorrowTimeSlots[0], isAdvanceOrderEnum.YES);
+            }
         }).catch((err) => {
             this.loading.isActive = false;
         });
@@ -719,11 +772,15 @@ export default {
         this.checkoutProps.form.order_type = this.orderType;
 
         if (Object.keys(this.timeSlot).length > 0) {
-            this.localDeliveryTimeLabel = this.timeSlot.label;
-            this.checkoutProps.form.delivery_time = this.timeSlot.delivery_time;
-            this.checkoutProps.form.is_advance_order = this.timeSlot.is_advance_order;
-            this.schedule = this.timeSlot.schedule;
-            this.scheduleTab = this.timeSlot.scheduleTab;
+            if (this.timeSlot.label && String(this.timeSlot.label).includes('-')) {
+                this.localDeliveryTimeLabel = null;
+            } else {
+                this.localDeliveryTimeLabel = this.timeSlot.label;
+                this.checkoutProps.form.delivery_time = this.timeSlot.delivery_time;
+                this.checkoutProps.form.is_advance_order = this.timeSlot.is_advance_order;
+                this.schedule = this.timeSlot.schedule;
+                this.scheduleTab = this.timeSlot.scheduleTab;
+            }
         }
 
     },
@@ -886,6 +943,7 @@ export default {
             this.loading.isActive = true;
             this.$store.dispatch("frontendSetting/lists").then(res => {
                 this.loading.isActive = false;
+
                 if (res.data.data.site_restaurant_status == activityEnum.DISABLE) {
                     alertService.error(this.$t('message.restaurant_closed'));
                     return;
@@ -895,40 +953,46 @@ export default {
                     alertService.error("The minimum order value is 17 €");
                     return;
                 }
-                this.showPaymentDialog = true;
+
+                // Reset and open payment modal
+                this.paymentMethod = null;
+                appService.modalShow('#payment-method-modal');
+
             }).catch((err) => {
                 this.loading.isActive = false;
                 alertService.error(this.$t('message.something_went_wrong'));
             });
         },
 
-        confirmPaymentMethod() {
+        resetPaymentModal: function () {
+            this.paymentMethod = null;
+            appService.modalHide('#payment-method-modal');
+        },
+
+        confirmPaymentMethod: function () {
             if (!this.paymentMethod) {
                 alertService.error("Please select a payment method.");
                 return;
             }
+
+            appService.modalHide('#payment-method-modal');
             this.loading.isActive = true;
+
+            // Build order payload
             this.checkoutProps.form.subtotal = this.subtotal;
             this.checkoutProps.form.total = parseFloat(
-                this.subtotal +
-                this.checkoutProps.form.delivery_charge -
-                this.checkoutProps.form.discount
+                this.subtotal + this.checkoutProps.form.delivery_charge - this.checkoutProps.form.discount
             ).toFixed(this.setting.site_digit_after_decimal_point);
-
+            this.checkoutProps.form.payment_method = this.paymentMethod;
             this.checkoutProps.form.items = [];
 
             _.forEach(this.carts, (item) => {
                 let item_variations = [];
                 if (Object.keys(item.item_variations.variations).length > 0) {
                     _.forEach(item.item_variations.variations, (value, index) => {
-                        item_variations.push({
-                            "id": value,
-                            "item_id": item.item_id,
-                            "item_attribute_id": index,
-                        });
+                        item_variations.push({ id: value, item_id: item.item_id, item_attribute_id: index });
                     });
                 }
-
                 if (Object.keys(item.item_variations.names).length > 0) {
                     let i = 0;
                     _.forEach(item.item_variations.names, (value, index) => {
@@ -941,13 +1005,9 @@ export default {
                 let item_extras = [];
                 if (item.item_extras.extras.length) {
                     _.forEach(item.item_extras.extras, (value) => {
-                        item_extras.push({
-                            id: value,
-                            item_id: item.item_id,
-                        });
+                        item_extras.push({ id: value, item_id: item.item_id });
                     });
                 }
-
                 if (item.item_extras.names.length) {
                     let i = 0;
                     _.forEach(item.item_extras.names, (value) => {
@@ -971,149 +1031,36 @@ export default {
                 });
             });
 
-            // Add selected payment method
-            this.checkoutProps.form.payment_method = this.paymentMethod;
-
             this.checkoutProps.form.items = JSON.stringify(this.checkoutProps.form.items);
 
             this.$store.dispatch('frontendOrder/save', this.checkoutProps.form).then(orderResponse => {
+                const orderId = orderResponse.data.data.id;
+
+                // Reset form state
                 this.mapShow = false;
-                this.location.lat = null;
-                this.location.lng = null;
+                this.location = { lat: null, lng: null };
                 this.branchAddress = null;
                 this.localAddress = {};
-
-                this.checkoutProps.form.branch_id = null;
-                this.checkoutProps.form.subtotal = null;
-                this.checkoutProps.form.discount = 0;
-                this.checkoutProps.form.delivery_charge = 0;
-                this.checkoutProps.form.delivery_time = null;
-                this.checkoutProps.form.total = 0;
-                this.checkoutProps.form.order_type = null;
-                this.checkoutProps.form.is_advance_order = null;
-                this.checkoutProps.form.address_id = null;
-                this.checkoutProps.form.coupon_id = null;
-                this.checkoutProps.form.items = [];
-
-                this.$store.dispatch('frontendCart/resetCart').then(res => {
-                    if (this.paymentMethod === 'cod') {
-                        this.loading.isActive = false;
-                        alertService.success("Order placed successfully. Please pay cash on delivery.");
-                        router.push({ name: 'frontend.myOrder', query: { id: orderResponse.data.data.id } })
-                    }
-                    else {
-
-
-
-
-
-                        this.loading.isActive = false;
-                        //router.push({ name: 'payment.pay', params: { id: orderResponse.data.data.id } });
-                        window.location.href = `/payment/${orderResponse.data.data.id}/pay`;
-
-                        //  href="'/payment/' + order.id + '/pay'"
-                        //router.push({ name: "frontend.myOrder", query: { id: orderResponse.data.data.id } });
-                    }
-                }).catch();
-            }).catch((err) => {
-                this.loading.isActive = false;
-                if (typeof err.response.data.errors === 'object') {
-                    _.forEach(err.response.data.errors, (error) => {
-                        alertService.error(error[0]);
-                    });
-                }
-            });
-        },
-
-
-
-        orderSubmit22: function () {
-            this.loading.isActive = true;
-            this.checkoutProps.form.subtotal = this.subtotal;
-            this.checkoutProps.form.total = parseFloat(this.subtotal + this.checkoutProps.form.delivery_charge - this.checkoutProps.form.discount).toFixed(this.setting.site_digit_after_decimal_point);
-            this.checkoutProps.form.items = [];
-            _.forEach(this.carts, (item, index) => {
-                let item_variations = [];
-                if (Object.keys(item.item_variations.variations).length > 0) {
-                    _.forEach(item.item_variations.variations, (value, index) => {
-                        item_variations.push({
-                            "id": value,
-                            "item_id": item.item_id,
-                            "item_attribute_id": index,
-                        });
-                    });
-                }
-
-                if (Object.keys(item.item_variations.names).length > 0) {
-                    let i = 0;
-                    _.forEach(item.item_variations.names, (value, index) => {
-                        item_variations[i].variation_name = index;
-                        item_variations[i].name = value;
-                        i++;
-                    });
-                }
-
-                let item_extras = [];
-                if (item.item_extras.extras.length) {
-                    _.forEach(item.item_extras.extras, (value) => {
-                        item_extras.push({
-                            id: value,
-                            item_id: item.item_id,
-                        });
-                    });
-                }
-
-                if (item.item_extras.names.length) {
-                    let i = 0;
-                    _.forEach(item.item_extras.names, (value) => {
-                        item_extras[i].name = value;
-                        i++;
-                    });
-                }
-
-                this.checkoutProps.form.items.push({
-                    item_id: item.item_id,
-                    item_price: item.convert_price,
-                    branch_id: this.checkoutProps.form.branch_id,
-                    instruction: item.instruction,
-                    quantity: item.quantity,
-                    discount: item.discount,
-                    total_price: item.total,
-                    item_variation_total: item.item_variation_total,
-                    item_extra_total: item.item_extra_total,
-                    item_variations: item_variations,
-                    item_extras: item_extras
+                Object.assign(this.checkoutProps.form, {
+                    branch_id: null, subtotal: null, discount: 0,
+                    delivery_charge: 0, delivery_time: null, total: 0,
+                    order_type: null, is_advance_order: null,
+                    address_id: null, coupon_id: null, items: []
                 });
-            });
-            this.checkoutProps.form.items = JSON.stringify(this.checkoutProps.form.items);
-            this.$store.dispatch('frontendOrder/save', this.checkoutProps.form).then(orderResponse => {
 
-                this.mapShow = false;
-                this.location.lat = null;
-                this.location.lng = null;
-                this.branchAddress = null;
-                this.localAddress = {};
-
-                this.checkoutProps.form.branch_id = null;
-                this.checkoutProps.form.subtotal = null;
-                this.checkoutProps.form.discount = 0;
-                this.checkoutProps.form.delivery_charge = 0;
-                this.checkoutProps.form.delivery_time = null;
-                this.checkoutProps.form.total = 0;
-                this.checkoutProps.form.order_type = null;
-                this.checkoutProps.form.is_advance_order = null;
-                this.checkoutProps.form.address_id = null;
-                this.checkoutProps.form.coupon_id = null;
-                this.checkoutProps.form.items = [];
-
-
-                this.$store.dispatch('frontendCart/resetCart').then(res => {
+                this.$store.dispatch('frontendCart/resetCart').then(() => {
                     this.loading.isActive = false;
-                    router.push(`/payment/${orderResponse.data.data.id}/pay`);
 
-                    //  href="'/payment/' + order.id + '/pay'"
-                    //router.push({ name: "frontend.myOrder", query: { id: orderResponse.data.data.id } });
+                    if (this.paymentMethod === 'cod') {
+                        // COD: order complete, go to order detail
+                        alertService.success("Order placed successfully. Please pay cash on delivery.");
+                        router.push({ name: 'frontend.myOrder', query: { id: orderId } });
+                    } else {
+                        // Online payment: redirect to payment gateway
+                        window.location.href = `/payment/${orderId}/pay`;
+                    }
                 }).catch();
+
             }).catch((err) => {
                 this.loading.isActive = false;
                 if (typeof err.response.data.errors === 'object') {
@@ -1123,12 +1070,25 @@ export default {
                 }
             });
         },
+
         changeOrderType: function (e) {
             this.checkoutProps.form.order_type = e;
             this.$store.dispatch('frontendCart/updateOrderType', this.checkoutProps.form.order_type).then().catch();
 
             // Refresh time slots with the new order type to apply correct minimum time offset
-            this.$store.dispatch("frontendTimeSlot/today", { order_type: e }).then().catch();
+            this.localDeliveryTimeLabel = null;
+            this.$store.dispatch("frontendTimeSlot/today", { order_type: e }).then(() => {
+                if (this.todayTimeSlots.length > 0) {
+                    this.scheduleTab = this.dayTakeEnum.TODAY;
+                    this.selectDeliveryTime(this.todayTimeSlots[0]);
+                }
+            }).catch();
+            this.$store.dispatch("frontendTimeSlot/tomorrow", { order_type: e }).then(() => {
+                if (this.todayTimeSlots.length === 0 && this.tomorrowTimeSlots.length > 0) {
+                    this.scheduleTab = this.dayTakeEnum.TOMORROW;
+                    this.selectDeliveryTime(this.tomorrowTimeSlots[0], isAdvanceOrderEnum.YES);
+                }
+            }).catch();
 
             if (this.checkoutProps.form.order_type === orderTypeEnum.TAKEAWAY) {
                 this.mapShow = true;
