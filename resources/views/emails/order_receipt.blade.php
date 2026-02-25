@@ -10,7 +10,6 @@
 
      <!-- LIEFERUNG -->
      <div style="border-top: 1px dashed #000; padding: 4px 0; text-align: center;">
-       <div>Bestellzeit: {{ $order['order_time'] ?? '' }}</div>
        <div style="margin-top: 4px; font-weight: bold;"># {{ $order['order_serial_no'] ?? '' }}</div>
        <div style="margin-top: 8px;">
          <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data={{ urlencode($order['order_serial_no'] ?? '') }}" alt="QR Code" />

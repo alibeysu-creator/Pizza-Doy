@@ -52,14 +52,24 @@ class AppLibrary
 
     public static function deliveryTime($dateTime, $pattern = null): string
     {
+        if (empty($dateTime)) {
+            return '';
+        }
+
         if (!$pattern) {
             $pattern = env('TIME_FORMAT');
         }
+
         $explode = explode('-', $dateTime);
         if (count($explode) == 2) {
             return Carbon::parse(trim($explode[0]))->format($pattern) . ' - ' . Carbon::parse(trim($explode[1]))->format($pattern);
         }
-        return '';
+
+        try {
+            return Carbon::parse(trim($dateTime))->format($pattern);
+        } catch (\Exception $e) {
+            return $dateTime;
+        }
     }
 
     public static function associativeToNumericArrayBuilder($array): array
