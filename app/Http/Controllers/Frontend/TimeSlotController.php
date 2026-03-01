@@ -24,7 +24,7 @@ class TimeSlotController extends Controller
     {
         try {
             return FrontendTimeSlotResource::collection(
-                $this->frontendTimeSlotService->todayTimeSlot()
+                $this->frontendTimeSlotService->todayTimeSlot(request('order_type'))
             );
         } catch (Exception $exception) {
             return response(['status' => false, 'message' => $exception->getMessage()], 422);
@@ -41,7 +41,7 @@ class TimeSlotController extends Controller
             }
 
             return FrontendTimeSlotResource::collection(
-                $this->frontendTimeSlotService->tomorrowTimeSlot()
+                $this->frontendTimeSlotService->tomorrowTimeSlot(request('order_type'))
             );
         } catch (Exception $exception) {
             return response(['status' => false, 'message' => $exception->getMessage()], 422);

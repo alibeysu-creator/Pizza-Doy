@@ -27,6 +27,9 @@ class FrontendTimeSlotService
             $defaultScheduleTime = 30;
             $todayTimes          = TimeSlot::select('opening_time', 'closing_time')->where(['day' => $today])->orderBy('opening_time', 'asc')->get()->toArray();
 
+            $prepTime            = Settings::group('order_setup')->get('order_setup_food_preparation_time');
+            $preparationInterval = !empty($prepTime) ? (int)$prepTime : 10;
+
             if ($orderType == \App\Enums\OrderType::DELIVERY) {
                 $orderSetup = Settings::group('order_setup')->get('order_setup_delivery_schedule_order_slot_duration');
             } else {
@@ -38,6 +41,7 @@ class FrontendTimeSlotService
             foreach ($todayTimes as $time) {
                 $arrays = $this->todayTimeSlotCalculation(
                     $defaultScheduleTime,
+                    $preparationInterval,
                     $time['opening_time'],
                     $time['closing_time'],
                     $orderType
@@ -71,6 +75,9 @@ class FrontendTimeSlotService
                 'asc'
             )->get()->toArray();
 
+            $prepTime            = Settings::group('order_setup')->get('order_setup_food_preparation_time');
+            $preparationInterval = !empty($prepTime) ? (int)$prepTime : 10;
+
             if ($orderType == \App\Enums\OrderType::DELIVERY) {
                 $orderSetup = Settings::group('order_setup')->get('order_setup_delivery_schedule_order_slot_duration');
             } else {
@@ -85,6 +92,7 @@ class FrontendTimeSlotService
             foreach ($tomorrowTimes as $key => $time) {
                 $arrays = $this->tomorrowTimeSlotCalculation(
                     $defaultScheduleTime,
+                    $preparationInterval,
                     $time['opening_time'],
                     $time['closing_time']
                 );
@@ -101,7 +109,7 @@ class FrontendTimeSlotService
         }
     }
 
-    function todayTimeSlotCalculation($interval, $startTime, $endTime, $orderType = null): array
+    function todayTimeSlotCalculation($interval, $preparationInterval, $startTime, $endTime, $orderType = null): array
     {
         $time   = [];
         $strCurrentTime = strtotime(date('H:i'));
@@ -121,7 +129,7 @@ class FrontendTimeSlotService
         $i = 0;
         while ($strStartTime <= $strEndTime) {
             $convertStartTime = date('H:i', $strStartTime);
-            $nextSlotTime     = strtotime('+' . $interval . ' minutes', $strStartTime);
+            $nextSlotTime     = strtotime('+' . $preparationInterval . ' minutes', $strStartTime);
             $convertEndTime   = date('H:i', $nextSlotTime);
 
             if ($strStartTime >= $strAvailableFrom) {
@@ -136,7 +144,7 @@ class FrontendTimeSlotService
         return $time;
     }
 
-    function tomorrowTimeSlotCalculation($interval, $startTime, $endTime): array
+    function tomorrowTimeSlotCalculation($interval, $preparationInterval, $startTime, $endTime): array
     {
         $i            = 0;
         $time         = [];
@@ -147,7 +155,7 @@ class FrontendTimeSlotService
 
         while ($strStartTime <= $strEndTime) {
             $convertStartTime = date('H:i', $strStartTime);
-            $nextSlotTime     = strtotime('+' . $interval . ' minutes', $strStartTime);
+            $nextSlotTime     = strtotime('+' . $preparationInterval . ' minutes', $strStartTime);
             $convertEndTime   = date('H:i', $nextSlotTime);
 
             $time[$i]['label']     = str_replace(':', '.', $convertStartTime);
