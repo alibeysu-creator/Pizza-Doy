@@ -30,7 +30,6 @@ class SimpleItemResource extends JsonResource
             "convert_price"  => AppLibrary::convertAmountFormat($this->price),
             "currency_price" => AppLibrary::currencyAmountFormat($this->price),
             "price"          => $this->price,
-            "item_type"      => $this->item_type,
             "status"         => $this->status,
             "description"    => $this->description === null ? '' : $this->description,
             "caution"        => $this->caution === null ? '' : $this->caution,

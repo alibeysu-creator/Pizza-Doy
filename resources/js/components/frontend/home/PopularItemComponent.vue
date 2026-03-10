@@ -5,7 +5,7 @@
             <div class="flex items-center justify-between gap-2 mb-6">
                 <h2 class="text-2xl font-semibold capitalize">{{ $t('label.most_popular_items') }}</h2>
             </div>
-            <ItemComponent :items="popularItems" :type="itemProps.type" :design="itemProps.design" />
+            <ItemComponent :items="popularItems" :design="itemProps.design" />
         </div>
     </section>
 </template>
@@ -32,7 +32,6 @@ export default {
             },
             itemProps: {
                 design: itemDesignEnum.LIST,
-                type: null,
             },
         };
     },

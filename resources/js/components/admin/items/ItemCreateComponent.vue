@@ -53,27 +53,6 @@
                         <small class="db-field-alert" v-if="errors.image">{{ errors.image[0] }}</small>
                     </div>
 
-                    <div class="form-col-12 sm:form-col-6">
-                        <label class="db-field-title" for="veg">{{ $t("label.item_type") }}</label>
-                        <div class="db-field-radio-group">
-                            <div class="db-field-radio">
-                                <div class="custom-radio">
-                                    <input type="radio" v-model="props.form.item_type" id="veg"
-                                        :value="enums.itemTypeEnum.VEG" class="custom-radio-field">
-                                    <span class="custom-radio-span"></span>
-                                </div>
-                                <label for="veg" class="db-field-label">{{ $t('label.veg') }}</label>
-                            </div>
-                            <div class="db-field-radio">
-                                <div class="custom-radio">
-                                    <input type="radio" class="custom-radio-field" v-model="props.form.item_type"
-                                        id="nonVeg" :value="enums.itemTypeEnum.NON_VEG">
-                                    <span class="custom-radio-span"></span>
-                                </div>
-                                <label for="nonVeg" class="db-field-label">{{ $t('label.non_veg') }}</label>
-                            </div>
-                        </div>
-                    </div>
 
                     <div class="form-col-12 sm:form-col-6">
                         <label class="db-field-title" for="yes">{{ $t("label.is_featured") }}</label>
@@ -157,7 +136,6 @@
 <script>
 import SmSidebarModalCreateComponent from "../components/buttons/SmSidebarModalCreateComponent";
 import LoadingComponent from "../components/LoadingComponent";
-import itemTypeEnum from "../../../enums/modules/itemTypeEnum";
 import askEnum from "../../../enums/modules/askEnum";
 import statusEnum from "../../../enums/modules/statusEnum";
 import alertService from "../../../services/alertService";
@@ -174,15 +152,10 @@ export default {
             },
             enums: {
                 statusEnum: statusEnum,
-                itemTypeEnum: itemTypeEnum,
                 askEnum: askEnum,
                 statusEnumArray: {
                     [statusEnum.ACTIVE]: this.$t("label.active"),
                     [statusEnum.INACTIVE]: this.$t("label.inactive")
-                },
-                itemTypeEnumArray: {
-                    [itemTypeEnum.VEG]: this.$t("label.veg"),
-                    [itemTypeEnum.NON_VEG]: this.$t("label.non_veg")
                 },
                 askEnumArray: {
                     [askEnum.YES]: this.$t("label.yes"),
@@ -231,7 +204,6 @@ export default {
                 description: "",
                 caution: "",
                 is_featured: askEnum.YES,
-                item_type: itemTypeEnum.VEG,
                 item_category_id: null,
                 tax_id: null,
                 status: statusEnum.ACTIVE,
@@ -250,7 +222,6 @@ export default {
                 description: "",
                 caution: "",
                 is_featured: askEnum.YES,
-                item_type: itemTypeEnum.VEG,
                 item_category_id: null,
                 tax_id: null,
                 status: statusEnum.ACTIVE,
@@ -267,7 +238,6 @@ export default {
                 fd.append('price', this.props.form.price);
                 fd.append('item_category_id', this.props.form.item_category_id == null ? '' : this.props.form.item_category_id);
                 fd.append('tax_id', this.props.form.tax_id == null ? '' : this.props.form.tax_id);
-                fd.append('item_type', this.props.form.item_type);
                 fd.append('is_featured', this.props.form.is_featured);
                 fd.append('description', this.props.form.description);
                 fd.append('caution', this.props.form.caution);
@@ -291,7 +261,6 @@ export default {
                         description: "",
                         caution: "",
                         is_featured: askEnum.YES,
-                        item_type: itemTypeEnum.VEG,
                         item_category_id: null,
                         tax_id: null,
                         status: statusEnum.ACTIVE,

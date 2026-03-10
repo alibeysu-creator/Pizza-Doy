@@ -29,7 +29,6 @@ class ItemReportResource extends JsonResource
             "convert_price"    => AppLibrary::convertAmountFormat($this->price),
             "currency_price"   => AppLibrary::currencyAmountFormat($this->price),
             "price"            => $this->price,
-            "item_type"        => $this->item_type,
             "is_featured"      => $this->is_featured,
             "status"           => $this->status,
             "description"      => $this->description === null ? '' : $this->description,
