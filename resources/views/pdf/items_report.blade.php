@@ -101,7 +101,6 @@
                     <tr>
                         <th>{{ trans('all.label.name', [], 'en') }}</th>
                         <th>{{ trans('all.label.item_category_id', [], 'en') }}</th>
-                        <th>{{ trans('all.label.item_type', [], 'en') }}</th>
                         <th>{{ trans('all.label.quantity', [], 'en') }}</th>
                     </tr>
                 </thead>
@@ -113,7 +112,6 @@
                         <tr>
                             <td>{{$item->name}}</td>
                             <td>{{  optional($item->category)->name }}</td>
-                            <td>{{ trans( 'itemType.' . $item->item_type , [] , 'en') }}</td>
                             <td>{{    $item->orders->count() }}</td>
 
                         </tr>

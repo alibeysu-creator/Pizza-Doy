@@ -15,7 +15,7 @@
                         :class="itemProps.design === itemDesignEnum.GRID ? 'text-primary' : 'text-[#A0A3BD]'"></button>
                 </div>
             </div>
-            <ItemComponent v-if="hasItems" :items="items.items" :type="itemProps.type" :design="itemProps.design" />
+            <ItemComponent v-if="hasItems" :items="items.items" :design="itemProps.design" />
 
             <div class="mt-12" v-else>
                 <div class="max-w-[250px] mx-auto">
@@ -48,7 +48,6 @@ export default {
             items: {},
             itemProps: {
                 design: itemDesignEnum.LIST,
-                type: null,
             },
             route: null,
         };
@@ -77,13 +76,6 @@ export default {
             });
         }
     },
-    methods: {
-        itemTypeSet: function (e) {
-            this.itemProps.type = e;
-        },
-        itemTypeReset: function () {
-            this.itemProps.type = null;
-        },
-    },
+    methods: {},
 };
 </script>

@@ -26,28 +26,6 @@
                 </Swiper>
             </div>
 
-            <div v-if="categories.length > 0" class="flex flex-wrap gap-3 w-full mb-5 veg-navs">
-                <button
-                    :disabled="itemProps.property.type !== null && itemProps.property.type === enums.itemTypeEnum.VEG"
-                    @click.prevent="itemProps.property.type === enums.itemTypeEnum.NON_VEG ? itemTypeReset() : itemTypeSet(enums.itemTypeEnum.NON_VEG)"
-                    :class="itemProps.property.type === enums.itemTypeEnum.NON_VEG ? 'veg-active' : ''" type="button"
-                    class="flex items-center gap-3 w-fit pl-3 pr-4 py-1.5 rounded-3xl transition hover:shadow-filter hover:bg-white bg-[#EFF0F6]">
-                    <img :src="setting.image_vag" alt="category" class="h-6">
-                    <span class="capitalize text-sm font-medium text-heading">{{ $t('label.frontend_non_veg') }}</span>
-                    <i
-                        class="lab-close-circle-line text-xl text-red-500 transition opacity-0 ltr:-ml-8 rtl:-mr-8 clear-item-type-filter font-fill-danger lab-font-size-24"></i>
-                </button>
-                <button
-                    :disabled="itemProps.property.type !== null && itemProps.property.type === enums.itemTypeEnum.NON_VEG"
-                    @click.prevent="itemProps.property.type === enums.itemTypeEnum.VEG ? itemTypeReset() : itemTypeSet(enums.itemTypeEnum.VEG)"
-                    :class="itemProps.property.type === enums.itemTypeEnum.VEG ? 'veg-active' : ''" type="button"
-                    class="flex items-center gap-3 w-fit pl-3 pr-4 py-1.5 rounded-3xl transition hover:shadow-filter hover:bg-white bg-[#EFF0F6]">
-                    <img :src="setting.image_non_vag" alt="category" class="h-6">
-                    <span class="capitalize text-sm font-medium text-heading">{{ $t('label.veg') }}</span>
-                    <i
-                        class="lab-close-circle-line text-xl text-red-500 transition opacity-0 ltr:-ml-8 rtl:-mr-8 font-fill-danger lab-font-size-24"></i>
-                </button>
-            </div>
 
             <div v-if="Object.keys(category).length > 0" class="flex gap-4 items-center justify-between mb-6">
                 <h2 class="capitalize text-[26px] leading-[40px] font-semibold text-center sm:text-left text-primary">
@@ -63,7 +41,7 @@
                 </div>
             </div>
 
-            <ItemComponent :items="items" :type="itemProps.property.type" :design="itemProps.property.design" />
+            <ItemComponent :items="items" :design="itemProps.property.design" />
         </div>
     </section>
 
@@ -122,7 +100,6 @@ import LoadingComponent from "../../table/components/LoadingComponent.vue";
 import statusEnum from "../../../enums/modules/statusEnum";
 import ItemComponent from "../components/ItemComponent.vue";
 import itemDesignEnum from "../../../enums/modules/itemDesignEnum";
-import itemTypeEnum from "../../../enums/modules/itemTypeEnum";
 import orderTypeEnum from "../../../enums/modules/orderTypeEnum";
 import activityEnum from "../../../enums/modules/activityEnum";
 import paymentStatusEnum from "../../../enums/modules/paymentStatusEnum";
@@ -170,7 +147,6 @@ export default {
             enums: {
                 activityEnum: activityEnum,
                 paymentStatusEnum: paymentStatusEnum,
-                itemTypeEnum: itemTypeEnum,
                 itemDesignEnum: itemDesignEnum,
                 orderTypeEnumArray: {
                     [orderTypeEnum.DELIVERY]: this.$t("label.delivery"),
@@ -256,12 +232,6 @@ export default {
             }).catch((err) => {
                 this.loading.isActive = false;
             });
-        },
-        itemTypeSet: function (e) {
-            this.itemProps.property.type = e;
-        },
-        itemTypeReset: function () {
-            this.itemProps.property.type = null;
         },
     }
 }

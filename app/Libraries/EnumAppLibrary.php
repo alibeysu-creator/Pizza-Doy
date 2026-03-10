@@ -5,23 +5,10 @@ namespace App\Libraries;
 
 use App\Enums\Ask;
 use App\Enums\Status;
-use App\Enums\ItemType;
 
 
 class EnumAppLibrary {
     
-    public static function itemType($itemType): int
-    {
-        $itemType = strtolower(trim($itemType));
-        if ($itemType === 'veg') {
-            return ItemType::VEG;
-        } elseif ($itemType === 'non veg' || $itemType === 'non-veg') {
-            return ItemType::NON_VEG;
-        }
-
-        return ItemType::VEG;
-    }
-
     public static function itemFeature($featureType): int
     {
         $featureType = strtolower(trim($featureType));

@@ -57,14 +57,6 @@
                     </div>
                 </div>
 
-                <div class="col-12 sm:col-6 !py-1.5">
-                    <div class="db-list-item p-0">
-                        <span class="db-list-item-title w-full sm:w-1/2">{{ $t('label.type') }}</span>
-                        <span class="db-list-item-text w-full sm:w-1/2">{{
-                            enums.itemTypeEnumArray[item.item_type]
-                        }}</span>
-                    </div>
-                </div>
 
                 <div class="col-12 sm:col-6 !py-1.5">
                     <div class="db-list-item p-0">
@@ -152,7 +144,6 @@
 <script>
 import LoadingComponent from "../components/LoadingComponent";
 import statusEnum from "../../../enums/modules/statusEnum";
-import itemTypeEnum from "../../../enums/modules/itemTypeEnum";
 import askEnum from "../../../enums/modules/askEnum";
 import appService from "../../../services/appService";
 import alertService from "../../../services/alertService";
@@ -175,15 +166,10 @@ export default {
             },
             enums: {
                 statusEnum: statusEnum,
-                itemTypeEnum: itemTypeEnum,
                 askEnum: askEnum,
                 statusEnumArray: {
                     [statusEnum.ACTIVE]: this.$t("label.active"),
                     [statusEnum.INACTIVE]: this.$t("label.inactive")
-                },
-                itemTypeEnumArray: {
-                    [itemTypeEnum.VEG]: this.$t("label.veg"),
-                    [itemTypeEnum.NON_VEG]: this.$t("label.non_veg")
                 },
                 askEnumArray: {
                     [askEnum.YES]: this.$t("label.yes"),

@@ -6,26 +6,6 @@
                 <CategoryComponent :categories="categories" :design="categoryProps.design" />
             </div>
 
-            <div v-if="categories.length > 0" class="flex flex-wrap gap-3 w-full mb-12 veg-navs">
-                <button :disabled="itemProps.type !== null && itemProps.type === itemTypeEnum.VEG"
-                    @click.prevent="itemProps.type === itemTypeEnum.NON_VEG ? itemTypeReset() : itemTypeSet(itemTypeEnum.NON_VEG)"
-                    :class="itemProps.type === itemTypeEnum.NON_VEG ? 'veg-active' : ''" type="button"
-                    class="flex items-center gap-3 w-fit pl-3 pr-4 py-1.5 rounded-3xl transition hover:shadow-filter hover:bg-white bg-[#EFF0F6]">
-                    <img :src="setting.image_vag" alt="category" class="h-6">
-                    <span class="capitalize text-sm font-medium text-heading">{{ $t('label.frontend_non_veg') }}</span>
-                    <i
-                        class="lab-close-circle-line text-xl text-red-500 transition opacity-0 ltr:-ml-8 rtl:-mr-8 clear-item-type-filter font-fill-danger lab-font-size-24"></i>
-                </button>
-                <button :disabled="itemProps.type !== null && itemProps.type === itemTypeEnum.NON_VEG"
-                    @click.prevent="itemProps.type === itemTypeEnum.VEG ? itemTypeReset() : itemTypeSet(itemTypeEnum.VEG)"
-                    :class="itemProps.type === itemTypeEnum.VEG ? 'veg-active' : ''" type="button"
-                    class="flex items-center gap-3 w-fit pl-3 pr-4 py-1.5 rounded-3xl transition hover:shadow-filter hover:bg-white bg-[#EFF0F6]">
-                    <img :src="setting.image_non_vag" alt="category" class="h-6">
-                    <span class="capitalize text-sm font-medium text-heading">{{ $t('label.veg') }}</span>
-                    <i
-                        class="lab-close-circle-line text-xl text-red-500 transition opacity-0 ltr:-ml-8 rtl:-mr-8 font-fill-danger lab-font-size-24"></i>
-                </button>
-            </div>
 
             <div v-if="Object.keys(category).length > 0"
                 class="flex gap-4 flex-col sm:flex-row items-center justify-between mb-6">
@@ -42,7 +22,7 @@
                 </div>
             </div>
 
-            <ItemComponent v-if="hasItems" :items="items.items" :type="itemProps.type" :design="itemProps.design" />
+            <ItemComponent v-if="hasItems" :items="items.items" :design="itemProps.design" />
 
             <div class="mt-12" v-else>
                 <div class="max-w-[250px] mx-auto">
@@ -61,7 +41,6 @@ import categoryDesignEnum from "../../../enums/modules/categoryDesignEnum";
 import CategoryComponent from "../components/CategoryComponent";
 import ItemComponent from "../components/ItemComponent";
 import itemDesignEnum from "../../../enums/modules/itemDesignEnum";
-import itemTypeEnum from "../../../enums/modules/itemTypeEnum";
 import LoadingComponent from "../components/LoadingComponent";
 
 export default {
@@ -72,7 +51,6 @@ export default {
             loading: {
                 isActive: false
             },
-            itemTypeEnum: itemTypeEnum,
             itemDesignEnum: itemDesignEnum,
             category: {},
             items: {},
@@ -87,7 +65,6 @@ export default {
             },
             itemProps: {
                 design: itemDesignEnum.LIST,
-                type: null
             }
         }
     },
@@ -113,12 +90,6 @@ export default {
         this.categoryShow();
     },
     methods: {
-        itemTypeSet: function (e) {
-            this.itemProps.type = e;
-        },
-        itemTypeReset: function () {
-            this.itemProps.type = null;
-        },
         categoryShow: function () {
             if (typeof this.$route.query.s !== "undefined" && this.$route.query.s !== "") {
                 this.loading.isActive = true;

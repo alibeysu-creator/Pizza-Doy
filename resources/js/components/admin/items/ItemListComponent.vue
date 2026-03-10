@@ -65,17 +65,6 @@
                                 :closeOnSelect="true" :searchable="true" :clearOnClose="true" placeholder="--"
                                 search-placeholder="--" />
                         </div>
-                        <div class="col-12 sm:col-6 md:col-4 xl:col-3">
-                            <label for="searchItemType" class="db-field-title after:hidden">{{
-                                $t("label.item_type")
-                            }}</label>
-                            <vue-select class="db-field-control f-b-custom-select" id="searchItemType"
-                                v-model="props.search.item_type" :options="[
-                                    { id: enums.itemTypeEnum.VEG, name: $t('label.veg') },
-                                    { id: enums.itemTypeEnum.NON_VEG, name: $t('label.non_veg') },
-                                ]" label-by="name" value-by="id" :closeOnSelect="true" :searchable="true"
-                                :clearOnClose="true" placeholder="--" search-placeholder="--" />
-                        </div>
 
                         <div class="col-12 sm:col-6 md:col-4 xl:col-3">
                             <label for="searchIsFeatured" class="db-field-title after:hidden">{{
@@ -168,7 +157,7 @@
 
                     <tbody class="db-table-body" v-else>
                         <tr class="db-table-body-tr">
-                            <td class="db-table-body-td text-center" colspan="7">
+                            <td class="db-table-body-td text-center" colspan="5">
                                 <div class="p-4">
                                     <div class="max-w-[300px] mx-auto mt-2">
                                         <img class="w-full h-full" :src="ENV.API_URL + '/images/default/not-found.png'"
@@ -199,7 +188,6 @@ import ItemCreateComponent from "./ItemCreateComponent";
 import alertService from "../../../services/alertService";
 import statusEnum from "../../../enums/modules/statusEnum";
 import askEnum from "../../../enums/modules/askEnum";
-import itemTypeEnum from "../../../enums/modules/itemTypeEnum";
 import PaginationTextComponent from "../components/pagination/PaginationTextComponent";
 import PaginationBox from "../components/pagination/PaginationBox";
 import PaginationSMBox from "../components/pagination/PaginationSMBox";
@@ -247,7 +235,6 @@ export default {
             },
             enums: {
                 statusEnum: statusEnum,
-                itemTypeEnum: itemTypeEnum,
                 askEnum: askEnum,
                 statusEnumArray: {
                     [statusEnum.ACTIVE]: this.$t("label.active"),
@@ -280,7 +267,6 @@ export default {
                     description: "",
                     caution: "",
                     is_featured: askEnum.YES,
-                    item_type: itemTypeEnum.VEG,
                     item_category_id: null,
                     tax_id: null,
                     status: statusEnum.ACTIVE,
@@ -296,7 +282,6 @@ export default {
                     item_category_id: null,
                     status: null,
                     tax_id: null,
-                    item_type: null,
                     is_featured: null
                 }
             },
@@ -366,7 +351,6 @@ export default {
             this.props.search.item_category_id = null;
             this.props.search.status = null;
             this.props.search.tax_id = null;
-            this.props.search.item_type = null;
             this.props.search.is_featured = null;
             this.list();
         },
@@ -391,7 +375,6 @@ export default {
                 description: item.description,
                 caution: item.caution,
                 is_featured: item.is_featured,
-                item_type: item.item_type,
                 tax_id: item.tax_id,
                 item_category_id: item.item_category_id,
                 status: item.status,

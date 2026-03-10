@@ -15,7 +15,7 @@
                         :class="itemProps.design === itemDesignEnum.GRID ? 'text-primary' : 'text-[#A0A3BD]'"></button>
                 </div>
             </div>
-            <ItemComponent :items="items" :type="itemProps.type" :design="itemProps.design" v-if="items.length > 0" />
+            <ItemComponent :items="items" :design="itemProps.design" v-if="items.length > 0" />
 
             <div class="mt-12" v-else>
                 <div class="max-w-[250px] mx-auto">
@@ -52,7 +52,6 @@ export default {
             items: {},
             itemProps: {
                 design: itemDesignEnum.LIST,
-                type: null,
             },
             props: {
                 search: {
@@ -83,12 +82,6 @@ export default {
         }
     },
     methods: {
-        itemTypeSet: function (e) {
-            this.itemProps.type = e;
-        },
-        itemTypeReset: function () {
-            this.itemProps.type = null;
-        },
         searItems: function () {
             if (typeof this.$route.query.s !== "undefined" && this.$route.query.s !== "") {
                 this.props.search.name = this.$route.query.s;

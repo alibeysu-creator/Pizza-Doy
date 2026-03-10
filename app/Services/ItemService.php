@@ -24,7 +24,6 @@ class ItemService
         'item_category_id',
         'price',
         'is_featured',
-        'item_type',
         'tax_id',
         'status',
         'order',

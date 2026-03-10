@@ -33,17 +33,6 @@
                                 placeholder="--" search-placeholder="--" />
                         </div>
 
-                        <div class="col-12 sm:col-6 md:col-4 xl:col-3">
-                            <label for="item_type" class="db-field-title after:hidden">{{
-                                $t('label.type')
-                            }}</label>
-                            <vue-select class="db-field-control f-b-custom-select" id="item_type"
-                                v-model="props.search.item_type" :options="[
-                                    { id: enums.itemTypeEnum.VEG, name: $t('label.veg') },
-                                    { id: enums.itemTypeEnum.NON_VEG, name: $t('label.non_veg') }
-                                ]" label-by="name" value-by="id" :closeOnSelect="true" :searchable="true"
-                                :clearOnClose="true" placeholder="--" search-placeholder="--" />
-                        </div>
 
                         <div class="col-12 sm:col-6 md:col-4 xl:col-3">
                             <label for="name" class="db-field-title">{{
@@ -89,7 +78,6 @@
                         <tr class="db-table-head-tr">
                             <th class="db-table-head-th">{{ $t('label.name') }}</th>
                             <th class="db-table-head-th">{{ $t('label.category') }}</th>
-                            <th class="db-table-head-th">{{ $t('label.type') }}</th>
                             <th class="db-table-head-th">{{ $t('label.quantity') }}</th>
                         </tr>
                     </thead>
@@ -97,15 +85,12 @@
                         <tr class="db-table-body-tr" v-for="itemsReport in itemsReports" :key="itemsReport">
                             <td class="db-table-body-td">{{ itemsReport.name }}</td>
                             <td class="db-table-body-td">{{ itemsReport.category_name }}</td>
-                            <td class="db-table-body-td">
-                                {{ enums.itemTypeEnumArray[itemsReport.item_type] }}
-                            </td>
                             <td class="db-table-body-td">{{ itemsReport.order }}</td>
                         </tr>
                     </tbody>
                     <tbody class="db-table-body" v-else>
                         <tr class="db-table-body-tr">
-                            <td class="db-table-body-td text-center" colspan="7">
+                            <td class="db-table-body-td text-center" colspan="3">
                                 <div class="p-4">
                                     <div class="max-w-[300px] mx-auto mt-2">
                                         <img class="w-full h-full" :src="ENV.API_URL + '/images/default/not-found.png'"
@@ -146,7 +131,6 @@ import PaginationTextComponent from "../components/pagination/PaginationTextComp
 import PaginationBox from "../components/pagination/PaginationBox";
 import PaginationSMBox from "../components/pagination/PaginationSMBox";
 import appService from "../../../services/appService";
-import itemTypeEnum from "../../../enums/modules/itemTypeEnum";
 import paymentTypeEnum from "../../../enums/modules/paymentTypeEnum";
 import TableLimitComponent from "../components/TableLimitComponent";
 import FilterComponent from "../components/buttons/collapse/FilterComponent";
@@ -209,12 +193,7 @@ export default {
                 isActive: false
             },
             enums: {
-                itemTypeEnum: itemTypeEnum,
                 paymentTypeEnum: paymentTypeEnum,
-                itemTypeEnumArray: {
-                    [itemTypeEnum.VEG]: this.$t("label.veg"),
-                    [itemTypeEnum.NON_VEG]: this.$t("label.non_veg")
-                },
                 paymentTypeEnumArray: {
                     [paymentTypeEnum.CASH_ON_DELIVERY]: this.$t("label.cash_on_delivery"),
                     [paymentTypeEnum.E_WALLET]: this.$t("label.e_wallet"),
@@ -237,7 +216,6 @@ export default {
                     order_column: 'id',
                     name: null,
                     item_category_id: null,
-                    item_type: null,
                     from_date: "",
                     to_date: "",
                 }
@@ -318,7 +296,6 @@ export default {
             this.props.search.page = 1;
             this.props.search.name = null;
             this.props.search.item_category_id = null;
-            this.props.search.item_type = null;
             this.props.search.from_date = "";
             this.props.search.to_date = "";
             this.props.form.date = null;

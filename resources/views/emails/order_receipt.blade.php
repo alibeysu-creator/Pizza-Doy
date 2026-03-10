@@ -48,6 +48,7 @@
      <div style="border-top: 1px dashed #000; padding: 4px 0;">
        <div style="text-align: center; font-weight: bold;">BESTELLSUMME</div>
        <div>Bestellung: {{ $order['subtotal_currency_price'] ?? '0.00 €' }}</div>
+       <div>Rabatt: {{ $order['discount_currency_price'] ?? '0.00 €' }}</div>
        <div>Liefergebühr: {{ $order['delivery_charge_currency_price'] ?? '0.00 €' }}</div>
        <div style="font-weight: bold;">Gesamt: {{ $order['total_currency_price'] ?? '0.00 €' }}</div>
      </div>

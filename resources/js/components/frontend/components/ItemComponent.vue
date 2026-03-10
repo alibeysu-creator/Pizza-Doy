@@ -1,6 +1,6 @@
 <template>
     <div v-if="design === itemDesignEnum.LIST" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
-        <div v-for="item in items" :key="item" v-show="type === null || type === item.item_type"
+        <div v-for="item in items" :key="item"
             class="product-card-list">
             <img class="product-card-list-image" :src="item.thumb" alt="thumbnail">
             <div class="product-card-list-content-group">
@@ -34,7 +34,7 @@
     </div>
     <div v-else-if="design === itemDesignEnum.GRID"
         class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 lg:gap-6">
-        <div v-for="item in items" :key="item" v-show="type === null || type === item.item_type"
+        <div v-for="item in items" :key="item"
             class="product-card-grid">
             <img class="product-card-grid-image" :src="item.cover" alt="product">
             <div class="product-card-grid-content-group">
@@ -293,8 +293,7 @@ export default {
     },
     props: {
         items: Object,
-        design: Number,
-        type: Number
+        design: Number
     },
     data() {
         return {

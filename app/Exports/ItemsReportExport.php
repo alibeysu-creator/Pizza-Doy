@@ -31,7 +31,6 @@ class ItemsReportExport implements FromCollection, WithHeadings
             $itemsReportArray[] = [
                 $item->name,
                 optional($item->category)->name,
-                trans('itemType.' . $item->item_type),
                 $item->orders->count()
             ];
         }
@@ -49,7 +48,6 @@ class ItemsReportExport implements FromCollection, WithHeadings
         return [
             trans('all.label.name'),
             trans('all.label.item_category_id'),
-            trans('all.label.item_type'),
             trans('all.label.quantity'),
         ];
     }
