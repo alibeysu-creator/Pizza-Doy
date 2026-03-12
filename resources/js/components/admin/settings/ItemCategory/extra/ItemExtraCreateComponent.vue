@@ -55,6 +55,28 @@
                             </div>
                         </div>
 
+                        <div class="form-col-12 sm:form-col-6">
+                            <label class="db-field-title required">{{ $t("label.apply_to_all_items") }}</label>
+                            <div class="db-field-radio-group">
+                                <div class="db-field-radio">
+                                    <div class="custom-radio">
+                                        <input :value="enums.askEnum.YES" v-model="props.form.apply_to_all" id="applyYes"
+                                            type="radio" class="custom-radio-field" />
+                                        <span class="custom-radio-span"></span>
+                                    </div>
+                                    <label for="applyYes" class="db-field-label">{{ $t("label.yes") }}</label>
+                                </div>
+                                <div class="db-field-radio">
+                                    <div class="custom-radio">
+                                        <input :value="enums.askEnum.NO" v-model="props.form.apply_to_all" id="applyNo"
+                                            type="radio" class="custom-radio-field" />
+                                        <span class="custom-radio-span"></span>
+                                    </div>
+                                    <label for="applyNo" class="db-field-label">{{ $t("label.no") }}</label>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="form-col-12">
                             <div class="modal-btns">
                                 <button type="button" class="modal-btn-outline modal-close" @click="reset">
@@ -79,6 +101,7 @@ import LoadingComponent from "../../../components/LoadingComponent";
 import alertService from "../../../../../services/alertService";
 import appService from "../../../../../services/appService";
 import statusEnum from "../../../../../enums/modules/statusEnum";
+import askEnum from "../../../../../enums/modules/askEnum";
 
 export default {
     name: "ItemExtraCreateComponent",
@@ -95,6 +118,7 @@ export default {
                     [statusEnum.ACTIVE]: this.$t("label.active"),
                     [statusEnum.INACTIVE]: this.$t("label.inactive"),
                 },
+                askEnum: askEnum,
             },
             errors: {},
         };
@@ -116,10 +140,11 @@ export default {
             appService.modalHide('#extraModal');
             this.$store.dispatch("itemExtra/reset").then().catch();
             this.errors = {};
-            this.$props.props.form = {
+            this.props.form = {
                 name: "",
                 price: null,
                 status: statusEnum.ACTIVE,
+                apply_to_all: askEnum.NO,
             };
         },
         save: function () {
@@ -137,11 +162,12 @@ export default {
                         name: "",
                         price: null,
                         status: statusEnum.ACTIVE,
+                        apply_to_all: askEnum.NO
                     };
                     this.errors = {};
                 }).catch((err) => {
                     this.loading.isActive = false;
-                    this.errors = err.response.data.errors;
+                    this.errors = err.response.data.errors ?? {};
                 });
             } catch (err) {
                 this.loading.isActive = false;

@@ -9,6 +9,7 @@
                         <th class="db-table-head-th">{{ $t("label.name") }}</th>
                         <th class="db-table-head-th">{{ $t("label.price") }}</th>
                         <th class="db-table-head-th">{{ $t("label.status") }}</th>
+                        <th class="db-table-head-th">{{ $t("label.apply_to_all_items") }}</th>
                         <th class="db-table-head-th">{{ $t("label.action") }}</th>
                     </tr>
                 </thead>
@@ -24,6 +25,9 @@
                             <span :class="statusClass(extra.status)">
                                 {{ enums.statusEnumArray[extra.status] }}
                             </span>
+                        </td>
+                        <td class="db-table-body-td">
+                            {{ extra.apply_to_all === enums.askEnum.YES ? $t('label.yes') : $t('label.no') }}
                         </td>
                         <td class="db-table-body-td">
                             <SmIconModalEditComponent @click="edit(extra)" />
@@ -55,6 +59,7 @@ import appService from "../../../../../services/appService";
 import SmIconDeleteComponent from "../../../components/buttons/SmIconDeleteComponent";
 import SmIconModalEditComponent from "../../../components/buttons/SmIconModalEditComponent";
 import ItemExtraCreateComponent from "./ItemExtraCreateComponent";
+import askEnum from "../../../../../enums/modules/askEnum";
 import ENV from '../../../../../config/env';
 
 export default {
@@ -76,13 +81,15 @@ export default {
                     [statusEnum.ACTIVE]: this.$t("label.active"),
                     [statusEnum.INACTIVE]: this.$t("label.inactive"),
                 },
+                askEnum: askEnum,
             },
             extraProps: {
                 id: 0,
                 form: {
                     name: "",
                     price: null,
-                    status: statusEnum.ACTIVE
+                    status: statusEnum.ACTIVE,
+                    apply_to_all: askEnum.NO
                 },
                 search: {
                     paginate: 1,
@@ -131,6 +138,7 @@ export default {
                 name: itemExtra.name,
                 price: itemExtra.flat_price,
                 status: itemExtra.status,
+                apply_to_all: itemExtra.apply_to_all,
             };
         },
         destroy: function (id) {

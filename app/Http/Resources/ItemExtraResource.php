@@ -25,6 +25,7 @@ class ItemExtraResource extends JsonResource
             'flat_price'     => AppLibrary::flatAmountFormat($this->price),
             'convert_price'  => AppLibrary::convertAmountFormat($this->price),
             'status'         => $this->status,
+            'apply_to_all'   => $this->apply_to_all,
             "item_category"  => optional($this->itemCategory)->name,
         ];
     }

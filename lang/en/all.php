@@ -47,6 +47,7 @@ return [
         'online_orders'    => 'Online Orders',
         'sales_report'     => 'Sales Report',
         'items_report'     =>  'Items Report',
+        'apply_to_all_items' => 'Apply to all items in this category?',
     ],
     'message' => [
         'validation_error'            => 'Validation Error.',

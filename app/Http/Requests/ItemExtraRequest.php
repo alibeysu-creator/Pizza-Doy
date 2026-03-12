@@ -34,6 +34,7 @@ class ItemExtraRequest extends FormRequest
             ],
             'price'   => ['required', new IniAmount()],
             'status'  => ['required', 'numeric', 'max:24'],
+            'apply_to_all' => ['nullable', 'numeric'],
         ];
     }
 }

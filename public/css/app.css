@@ -3513,6 +3513,12 @@ input:checked + div svg {
 .z-\[999\] {
   z-index: 999;
 }
+.z-\[\] {
+  z-index: ;
+}
+.z-\[10\] {
+  z-index: 10;
+}
 .col-span-1 {
   grid-column: span 1 / span 1;
 }
@@ -4085,18 +4091,6 @@ input:checked + div svg {
 }
 .resize-none {
   resize: none;
-}
-.scroll-mt-\[150px\] {
-  scroll-margin-top: 150px;
-}
-.scroll-mt-\[250px\] {
-  scroll-margin-top: 250px;
-}
-.scroll-mt-\[200px\] {
-  scroll-margin-top: 200px;
-}
-.scroll-mt-\[180px\] {
-  scroll-margin-top: 180px;
 }
 .scroll-mt-\[170px\] {
   scroll-margin-top: 170px;

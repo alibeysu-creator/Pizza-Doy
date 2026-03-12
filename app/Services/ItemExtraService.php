@@ -53,7 +53,14 @@ class ItemExtraService
     public function store(ItemExtraRequest $request, ItemCategory $itemCategory)
     {
         try {
-            return ItemExtra::create($request->validated() + ['item_category_id' => $itemCategory->id]);
+            $itemExtra = ItemExtra::create($request->validated() + ['item_category_id' => $itemCategory->id]);
+            Log::info("ItemExtraService@store: apply_to_all = " . $request->apply_to_all);
+            if ($request->apply_to_all == \App\Enums\Ask::YES) {
+                $itemIds = $itemCategory->items()->pluck('id');
+                Log::info("ItemExtraService@store: Syncing with " . count($itemIds) . " items");
+                $itemExtra->items()->syncWithoutDetaching($itemIds);
+            }
+            return $itemExtra;
         } catch (Exception $exception) {
             Log::info($exception->getMessage());
             throw new Exception($exception->getMessage(), 422);
@@ -67,7 +74,14 @@ class ItemExtraService
     {
         try {
             if ($itemCategory->id == $itemExtra->item_category_id) {
-                return tap($itemExtra)->update($request->validated());
+                $itemExtra->update($request->validated());
+                Log::info("ItemExtraService@update: apply_to_all = " . $request->apply_to_all);
+                if ($request->apply_to_all == \App\Enums\Ask::YES) {
+                    $itemIds = $itemCategory->items()->pluck('id');
+                    Log::info("ItemExtraService@update: Syncing with " . count($itemIds) . " items");
+                    $itemExtra->items()->syncWithoutDetaching($itemIds);
+                }
+                return $itemExtra;
             } else {
                 throw new Exception(trans('all.item_match'), 422);
             }
