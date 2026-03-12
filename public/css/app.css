@@ -552,6 +552,9 @@ video {
   --tw-text-opacity: 1;
   color: rgb(31 31 57 / var(--tw-text-opacity, 1)); font-style: initial;
 }
+    html {
+  scroll-behavior: smooth;
+}
 
     body {
   scroll-behavior: smooth;
@@ -1066,10 +1069,9 @@ video {
   transition-timing-function: linear;
 }
 .menu-slides .menu-category-active {
+  border-radius: 0px;
   --tw-border-opacity: 1;
   border-color: rgb(255 0 107 / var(--tw-border-opacity, 1));
-  --tw-bg-opacity: 1;
-  background-color: rgb(220 234 255 / var(--tw-bg-opacity, 1));
 }
 .ff-header.landing-header.active {
   --tw-bg-opacity: 1;
@@ -3400,6 +3402,9 @@ input:checked + div svg {
 .relative {
   position: relative;
 }
+.sticky {
+  position: sticky;
+}
 .inset-0 {
   inset: 0px;
 }
@@ -3475,6 +3480,9 @@ input:checked + div svg {
 .top-\[58px\] {
   top: 58px;
 }
+.top-\[70px\] {
+  top: 70px;
+}
 .top-\[75px\] {
   top: 75px;
 }
@@ -3501,6 +3509,9 @@ input:checked + div svg {
 }
 .z-\[60\] {
   z-index: 60;
+}
+.z-\[999\] {
+  z-index: 999;
 }
 .col-span-1 {
   grid-column: span 1 / span 1;
@@ -3672,6 +3683,12 @@ input:checked + div svg {
 }
 .mt-\[-20px\] {
   margin-top: -20px;
+}
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 .block {
   display: block;
@@ -4069,6 +4086,21 @@ input:checked + div svg {
 .resize-none {
   resize: none;
 }
+.scroll-mt-\[150px\] {
+  scroll-margin-top: 150px;
+}
+.scroll-mt-\[250px\] {
+  scroll-margin-top: 250px;
+}
+.scroll-mt-\[200px\] {
+  scroll-margin-top: 200px;
+}
+.scroll-mt-\[180px\] {
+  scroll-margin-top: 180px;
+}
+.scroll-mt-\[170px\] {
+  scroll-margin-top: 170px;
+}
 .appearance-none {
   -webkit-appearance: none;
      -moz-appearance: none;
@@ -4321,6 +4353,9 @@ input:checked + div svg {
 .border-b-2 {
   border-bottom-width: 2px;
 }
+.border-b-4 {
+  border-bottom-width: 4px;
+}
 .border-l {
   border-left-width: 1px;
 }
@@ -4387,6 +4422,10 @@ input:checked + div svg {
 .border-primary {
   --tw-border-opacity: 1;
   border-color: rgb(255 0 107 / var(--tw-border-opacity, 1));
+}
+.border-primary-light {
+  --tw-border-opacity: 1;
+  border-color: rgb(220 234 255 / var(--tw-border-opacity, 1));
 }
 .border-primary\/30 {
   border-color: rgb(255 0 107 / 0.3);
@@ -6018,6 +6057,9 @@ input[type="search"]::-webkit-search-results-decoration { display: none; }
 .focus-within\:bg-white:focus-within {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
+}
+.hover\:\!rounded-2xl:hover {
+  border-radius: 1rem !important;
 }
 .hover\:border-primary:hover {
   --tw-border-opacity: 1;

@@ -31,6 +31,7 @@
     h4,
     h5,
     h6 { @apply text-heading; font-style: initial; }
+    html{@apply scroll-smooth}
 
     body { @apply text-base font-normal font-rubik scroll-smooth text-paragraph bg-white }
 }
@@ -144,7 +145,7 @@
     .profile-paper.active { @apply visible opacity-100 scale-100 transition }
     .veg-navs .veg-active { @apply shadow-filter bg-white } 
     .veg-navs .veg-active i { @apply opacity-100 ltr:ml-0 rtl:mr-0 } 
-    .menu-slides .menu-category-active { @apply bg-primary-light border-primary }
+    .menu-slides .menu-category-active { @apply rounded-none border-primary }
     .dimension-navs .dimension-active { @apply text-heading }
     .ff-header.landing-header.active { @apply shadow-xs bg-white }
 
