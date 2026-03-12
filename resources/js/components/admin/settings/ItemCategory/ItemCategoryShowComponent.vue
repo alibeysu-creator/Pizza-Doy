@@ -1,6 +1,21 @@
 <template>
     <LoadingComponent :props="loading" />
-    <div class="db-card">
+    <div class="col-12">
+        <div class="grid grid-cols-1 sm:grid-cols-2 mb-4 sm:mb-0">
+            <button type="button" @click="handleTab($event, '#information', '.db-tabBtn', '.db-tabDiv', 'active')"
+                class="db-tabBtn !justify-start active">
+                <i class="lab lab-information lab-font-size-16"></i>
+                {{ $t('label.information') }}
+            </button>
+            <button type="button" class="db-tabBtn !justify-start"
+                @click="handleTab($event, '#extra', '.db-tabBtn', '.db-tabDiv', 'active')"><i
+                    class="lab lab-extra lab-font-size-16"></i>
+                {{ $t('label.extras') }}
+            </button>
+        </div>
+        
+        <div class="db-tabDiv active" id="information">
+            <div class="db-card">
         <div class="db-card-header">
             <h3 class="db-card-title">{{ $t('menu.item_categories') }}</h3>
         </div>
@@ -19,6 +34,12 @@
                     </p>
                 </div>
             </div>
+            </div>
+        </div>
+        </div>
+        
+        <div class="db-tabDiv" id="extra">
+            <ItemExtraListComponent :item="parseInt($route.params.id)" />
         </div>
     </div>
 </template>
@@ -28,11 +49,13 @@ import LoadingComponent from "../../components/LoadingComponent";
 import statusEnum from "../../../../enums/modules/statusEnum";
 import alertService from "../../../../services/alertService";
 import appService from "../../../../services/appService";
+import ItemExtraListComponent from "./extra/ItemExtraListComponent";
 
 export default {
     name: "ItemCategoryShowComponent",
     components: {
-        LoadingComponent
+        LoadingComponent,
+        ItemExtraListComponent
     },
     data() {
         return {
@@ -64,6 +87,9 @@ export default {
     methods: {
         statusClass: function (status) {
             return appService.statusClass(status);
+        },
+        handleTab: function (event, targetID, targetButton, targetDiv, activeClass) {
+            return appService.handleTab(event, targetID, targetButton, targetDiv, activeClass);
         }
     }
 }

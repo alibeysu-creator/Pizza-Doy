@@ -11,17 +11,17 @@ class ItemExtra extends Model
     use HasFactory, SoftDeletes;
 
     protected $table = "item_extras";
-    protected $fillable = ['item_id', 'name', 'status', 'price'];
+    protected $fillable = ['item_category_id', 'name', 'status', 'price'];
     protected $casts = [
-        'id'      => 'integer',
-        'item_id' => 'integer',
-        'name'    => 'string',
-        'status'  => 'integer',
-        'price'   => 'decimal:6',
+        'id'               => 'integer',
+        'item_category_id' => 'integer',
+        'name'             => 'string',
+        'status'           => 'integer',
+        'price'            => 'decimal:6',
     ];
 
-    public function item()
+    public function itemCategory()
     {
-        return $this->belongsTo(Item::class, 'item_id', 'id');
+        return $this->belongsTo(ItemCategory::class, 'item_category_id', 'id');
     }
 }

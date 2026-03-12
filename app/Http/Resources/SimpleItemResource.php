@@ -40,9 +40,9 @@ class SimpleItemResource extends JsonResource
             "offer"          => SimpleOfferResource::collection(
                 $this->offer->filter(function ($offer) use ($price) {
                     if (Carbon::now()->between(
-                            $offer->start_date,
-                            $offer->end_date
-                        ) && $offer->status === Status::ACTIVE) {
+                        $offer->start_date,
+                        $offer->end_date
+                    ) && $offer->status === Status::ACTIVE) {
                         $offer->flat_price     = AppLibrary::flatAmountFormat($price - ($price / 100 * $offer->amount));
                         $offer->convert_price  = AppLibrary::convertAmountFormat(
                             $price - ($price / 100 * $offer->amount)

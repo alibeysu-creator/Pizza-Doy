@@ -1,7 +1,7 @@
 <template>
     <ItemExtraCreateComponent :props="extraProps" />
     <br><br>
-    <div class="db-card" v-if="extras.length > 0">
+    <div class="db-card" v-if="extras && extras.length > 0">
         <div class="db-table-responsive">
             <table class="db-table stripe">
                 <thead class="db-table-head">
@@ -12,7 +12,7 @@
                         <th class="db-table-head-th">{{ $t("label.action") }}</th>
                     </tr>
                 </thead>
-                <tbody class="db-table-body" v-if="extras.length > 0">
+                <tbody class="db-table-body" v-if="extras && extras.length > 0">
                     <tr class="db-table-body-tr" v-for="extra in extras" :key="extra">
                         <td class="db-table-body-td">
                             {{ extra.name }}
@@ -41,20 +41,24 @@
         </div>
         <span class="d-block mt-3 text-lg">{{ $t('message.no_data_available') }}</span>
     </div>
+    <div v-if="renderError" style="color: red; padding: 20px; border: 2px solid red;">
+        <h3>Error Caught:</h3>
+        <p>{{ renderError }}</p>
+    </div>
 </template>
 
 <script>
-import SmSidebarModalCreateComponent from "../../components/buttons/SmSidebarModalCreateComponent";
-import alertService from "../../../../services/alertService";
-import statusEnum from "../../../../enums/modules/statusEnum";
-import appService from "../../../../services/appService";
-import SmIconDeleteComponent from "../../components/buttons/SmIconDeleteComponent";
-import SmIconModalEditComponent from "../../components/buttons/SmIconModalEditComponent";
+import SmSidebarModalCreateComponent from "../../../components/buttons/SmSidebarModalCreateComponent";
+import alertService from "../../../../../services/alertService";
+import statusEnum from "../../../../../enums/modules/statusEnum";
+import appService from "../../../../../services/appService";
+import SmIconDeleteComponent from "../../../components/buttons/SmIconDeleteComponent";
+import SmIconModalEditComponent from "../../../components/buttons/SmIconModalEditComponent";
 import ItemExtraCreateComponent from "./ItemExtraCreateComponent";
-import ENV from '../../../../config/env';
+import ENV from '../../../../../config/env';
 
 export default {
-    name: "ItemVariationListComponent",
+    name: "ItemExtraListComponent",
     components: {
         ItemExtraCreateComponent, SmSidebarModalCreateComponent, SmIconModalEditComponent, SmIconDeleteComponent
     },
@@ -88,8 +92,13 @@ export default {
                     order_type: 'desc',
                 }
             },
-            ENV: ENV
+            ENV: ENV,
+            renderError: null
         }
+    },
+    onErrorCaptured(err, instance, info) {
+        this.renderError = String(err) + " | Info: " + info;
+        return false;
     },
     mounted() {
         this.extraProps.id = this.item;

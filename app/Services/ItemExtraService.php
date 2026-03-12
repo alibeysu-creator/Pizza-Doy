@@ -4,7 +4,7 @@ namespace App\Services;
 
 
 use Exception;
-use App\Models\Item;
+use App\Models\ItemCategory;
 use App\Models\ItemExtra;
 use Illuminate\Support\Facades\Log;
 use App\Http\Requests\PaginateRequest;
@@ -14,7 +14,7 @@ class ItemExtraService
 {
     public $itemExtra;
     protected $itemExtraFilter = [
-        'item_id',
+        'item_category_id',
         'name',
         'price',
         'status'
@@ -23,7 +23,7 @@ class ItemExtraService
     /**
      * @throws Exception
      */
-    public function list(PaginateRequest $request, Item $item)
+    public function list(PaginateRequest $request, ItemCategory $itemCategory)
     {
         try {
             $requests    = $request->all();
@@ -32,7 +32,7 @@ class ItemExtraService
             $orderColumn = $request->get('order_column') ?? 'id';
             $orderType   = $request->get('order_type') ?? 'desc';
 
-            return ItemExtra::with('item')->where(['item_id' => $item->id])->where(function ($query) use ($requests) {
+            return ItemExtra::with('itemCategory')->where(['item_category_id' => $itemCategory->id])->where(function ($query) use ($requests) {
                 foreach ($requests as $key => $request) {
                     if (in_array($key, $this->itemExtraFilter)) {
                         $query->where($key, 'like', '%' . $request . '%');
@@ -50,10 +50,10 @@ class ItemExtraService
     /**
      * @throws Exception
      */
-    public function store(ItemExtraRequest $request, Item $item)
+    public function store(ItemExtraRequest $request, ItemCategory $itemCategory)
     {
         try {
-            return ItemExtra::create($request->validated() + ['item_id' => $item->id]);
+            return ItemExtra::create($request->validated() + ['item_category_id' => $itemCategory->id]);
         } catch (Exception $exception) {
             Log::info($exception->getMessage());
             throw new Exception($exception->getMessage(), 422);
@@ -63,10 +63,10 @@ class ItemExtraService
     /**
      * @throws Exception
      */
-    public function update(ItemExtraRequest $request, Item $item, ItemExtra $itemExtra)
+    public function update(ItemExtraRequest $request, ItemCategory $itemCategory, ItemExtra $itemExtra)
     {
         try {
-            if ($item->id == $itemExtra->item_id) {
+            if ($itemCategory->id == $itemExtra->item_category_id) {
                 return tap($itemExtra)->update($request->validated());
             } else {
                 throw new Exception(trans('all.item_match'), 422);
@@ -80,10 +80,10 @@ class ItemExtraService
     /**
      * @throws Exception
      */
-    public function destroy(Item $item, ItemExtra $itemExtra)
+    public function destroy(ItemCategory $itemCategory, ItemExtra $itemExtra)
     {
         try {
-            if ($item->id == $itemExtra->item_id) {
+            if ($itemCategory->id == $itemExtra->item_category_id) {
                 $itemExtra->delete();
             } else {
                 throw new Exception(trans('all.item_match'), 422);
@@ -97,10 +97,10 @@ class ItemExtraService
     /**
      * @throws Exception
      */
-    public function show(Item $item, ItemExtra $itemExtra)
+    public function show(ItemCategory $itemCategory, ItemExtra $itemExtra)
     {
         try {
-            if ($item->id == $itemExtra->item_id) {
+            if ($itemCategory->id == $itemExtra->item_category_id) {
                 return $itemExtra;
             } else {
                 throw new Exception(trans('all.item_match'), 422);

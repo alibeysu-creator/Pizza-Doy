@@ -75,10 +75,10 @@
     </div>
 </template>
 <script>
-import LoadingComponent from "../../components/LoadingComponent";
-import alertService from "../../../../services/alertService";
-import appService from "../../../../services/appService";
-import statusEnum from "../../../../enums/modules/statusEnum";
+import LoadingComponent from "../../../components/LoadingComponent";
+import alertService from "../../../../../services/alertService";
+import appService from "../../../../../services/appService";
+import statusEnum from "../../../../../enums/modules/statusEnum";
 
 export default {
     name: "ItemExtraCreateComponent",

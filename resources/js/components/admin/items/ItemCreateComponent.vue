@@ -33,12 +33,22 @@
                             search-placeholder="--" />
                         <small class="db-field-alert" v-if="errors.item_category_id">{{
                             errors.item_category_id[0]
-                            }}</small>
+                        }}</small>
+                    </div>
+
+                    <div class="form-col-12 sm:form-col-6">
+                        <label for="extras" class="db-field-title">{{ $t("menu.extras") }}</label>
+                        <vue-select class="db-field-control f-b-custom-select" id="extras"
+                            v-bind:class="errors.extras ? 'invalid' : ''" v-model="props.form.extras"
+                            :options="itemExtras" label-by="name" value-by="id" :closeOnSelect="false"
+                            :searchable="true" :clearOnClose="true" placeholder="--" search-placeholder="--"
+                            :multiple="true" />
+                        <small class="db-field-alert" v-if="errors.extras">{{ errors.extras[0] }}</small>
                     </div>
 
                     <div class="form-col-12 sm:form-col-6">
                         <label for="tax_id" class="db-field-title">{{ $t("label.tax") }} ({{ $t("label.including")
-                            }})</label>
+                        }})</label>
                         <vue-select class="db-field-control f-b-custom-select" id="tax_id"
                             v-bind:class="errors.tax_id ? 'invalid' : ''" v-model="props.form.tax_id" :options="taxes"
                             label-by="code" value-by="id" :closeOnSelect="true" :searchable="true" :clearOnClose="true"
@@ -104,7 +114,7 @@
                             id="caution" rows="2" class="db-field-control"></textarea>
                         <small class="db-field-alert" v-if="errors.caution">{{
                             errors.caution[0]
-                            }}</small>
+                        }}</small>
                     </div>
 
                     <div class="form-col-12">
@@ -113,7 +123,7 @@
                             id="description" class="db-field-control"></textarea>
                         <small class="db-field-alert" v-if="errors.description">{{
                             errors.description[0]
-                            }}</small>
+                        }}</small>
                     </div>
 
                     <div class="col-12">
@@ -173,6 +183,9 @@ export default {
         itemCategories: function () {
             return this.$store.getters['itemCategory/lists'];
         },
+        itemExtras: function () {
+            return this.$store.getters['itemExtra/lists'];
+        },
         taxes: function () {
             return this.$store.getters['tax/lists'];
         }
@@ -207,6 +220,7 @@ export default {
                 item_category_id: null,
                 tax_id: null,
                 status: statusEnum.ACTIVE,
+                extras: [],
             };
             if (this.image) {
                 this.image = "";
@@ -225,6 +239,7 @@ export default {
                 item_category_id: null,
                 tax_id: null,
                 status: statusEnum.ACTIVE,
+                extras: [],
             };
             if (this.image) {
                 this.image = "";
@@ -243,6 +258,9 @@ export default {
                 fd.append('caution', this.props.form.caution);
                 fd.append('order', 1);
                 fd.append('status', this.props.form.status);
+                if (this.props.form.extras && this.props.form.extras.length > 0) {
+                    fd.append('extras', JSON.stringify(this.props.form.extras));
+                }
                 if (this.image) {
                     fd.append('image', this.image);
                 }
@@ -264,6 +282,7 @@ export default {
                         item_category_id: null,
                         tax_id: null,
                         status: statusEnum.ACTIVE,
+                        extras: [],
                     };
                     this.image = "";
                     this.errors = {};
@@ -280,6 +299,21 @@ export default {
             } catch (err) {
                 this.loading.isActive = false;
                 alertService.error(err)
+            }
+        }
+    },
+    watch: {
+        'props.form.item_category_id': function (newVal, oldVal) {
+            if (newVal && newVal !== oldVal) {
+                this.$store.dispatch('itemExtra/lists', {
+                    id: newVal,
+                    search: {
+                        paginate: 0,
+                        order_column: 'id',
+                        order_type: 'asc',
+                        status: this.enums.statusEnum.ACTIVE
+                    }
+                });
             }
         }
     }

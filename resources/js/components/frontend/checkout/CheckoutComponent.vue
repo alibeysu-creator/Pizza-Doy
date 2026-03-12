@@ -166,9 +166,10 @@
                                             <p v-if="Object.keys(cart.item_variations.variations).length !== 0"
                                                 class="capitalize text-xs mb-1.5">
                                                 <span
-                                                    v-for="(variation, variationName, index) in cart.item_variations.names">
+                                                    v-for="(variation, variationName, index) in _.pickBy(cart.item_variations.names, (v, k) => k.toLowerCase() !== 'extras')">
                                                     {{ variationName }}: {{ variation }}
-                                                    <span v-if="index + 1 < cart.item_variations.names.length">,
+                                                    <span
+                                                        v-if="index + 1 < Object.keys(_.pickBy(cart.item_variations.names, (v, k) => k.toLowerCase() !== 'extras')).length">,
                                                         &nbsp;</span>
                                                 </span>
                                             </p>
@@ -490,6 +491,7 @@ export default {
             loading: {
                 isActive: false,
             },
+            _: _,
             mapShow: false,
             placeOrderShow: false,
             mapKey: "branch",

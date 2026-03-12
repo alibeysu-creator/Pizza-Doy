@@ -10,7 +10,7 @@
                     {{ textShortener(item.name, 25) }}</h3>
                 <div class="flex items-center justify-between gap-2">
                     <h4 class="font-rubik">{{ item.offer.length > 0 ? item.offer[0].currency_price : item.currency_price
-                        }}
+                    }}
                     </h4>
                     <button @click.prevent="variationModalShow(item)" data-modal="#item-variation-modal"
                         class="db-product-cart pos-add-button flex items-center gap-1.5 rounded-3xl capitalize text-sm font-medium font-rubik py-1 px-2 shadow-cardCart transition bg-white hover:bg-primary">
@@ -148,7 +148,7 @@
                                             {{ textShortener(extra.name, 15) }}</h3>
                                         <h4 class="block text-xs font-medium text-heading">+{{
                                             extra.currency_price
-                                            }}</h4>
+                                        }}</h4>
                                     </div>
                                 </label>
                             </SwiperSlide>

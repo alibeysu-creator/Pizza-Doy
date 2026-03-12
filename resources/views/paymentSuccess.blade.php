@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,6 +13,7 @@
     <link rel="stylesheet" href="{{ asset('themes/default/fonts/lab/lab.css') }}">
     <link rel="stylesheet" href="{{ asset('themes/default/css/custom.css') }}">
 </head>
+
 <body>
 
     <div class="py-14 px-4 w-full max-w-2xl mx-auto flex flex-col items-center justify-center">
@@ -55,4 +57,5 @@
     </script>
 
 </body>
+
 </html>

@@ -30,7 +30,7 @@ class ItemExtraRequest extends FormRequest
                 'required',
                 'string',
                 'max:190',
-                Rule::unique("item_extras", "name")->whereNull('deleted_at')->ignore($this->route('itemExtra.id'))->where('item_id', $this->route('item.id')),
+                Rule::unique("item_extras", "name")->whereNull('deleted_at')->ignore(optional($this->itemExtra)->id)->where('item_category_id', optional($this->itemCategory)->id),
             ],
             'price'   => ['required', new IniAmount()],
             'status'  => ['required', 'numeric', 'max:24'],

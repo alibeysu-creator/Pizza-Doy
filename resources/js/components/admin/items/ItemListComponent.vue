@@ -34,20 +34,20 @@
                         <div class="col-12 sm:col-6 md:col-4 xl:col-3">
                             <label for="name" class="db-field-title after:hidden">{{
                                 $t("label.name")
-                            }}</label>
+                                }}</label>
                             <input id="name" v-model="props.search.name" type="text" class="db-field-control" />
                         </div>
                         <div class="col-12 sm:col-6 md:col-4 xl:col-3">
                             <label for="price" class="db-field-title after:hidden">{{
                                 $t("label.price")
-                            }}</label>
+                                }}</label>
                             <input id="price" v-on:keypress="numberOnly($event)" v-model="props.search.price"
                                 type="text" class="db-field-control" />
                         </div>
                         <div class="col-12 sm:col-6 md:col-4 xl:col-3">
                             <label for="item_category_id" class="db-field-title">{{
                                 $t("label.category")
-                            }}</label>
+                                }}</label>
 
                             <vue-select class="db-field-control f-b-custom-select" id="item_category_id"
                                 v-model="props.search.item_category_id" :options="itemCategories" label-by="name"
@@ -58,7 +58,7 @@
                         <div class="col-12 sm:col-6 md:col-4 xl:col-3">
                             <label for="tax_id" class="db-field-title">{{
                                 $t("label.tax")
-                            }}</label>
+                                }}</label>
 
                             <vue-select class="db-field-control f-b-custom-select" id="tax_id"
                                 v-model="props.search.tax_id" :options="taxes" label-by="name" value-by="id"
@@ -69,7 +69,7 @@
                         <div class="col-12 sm:col-6 md:col-4 xl:col-3">
                             <label for="searchIsFeatured" class="db-field-title after:hidden">{{
                                 $t("label.is_featured")
-                            }}</label>
+                                }}</label>
                             <vue-select class="db-field-control f-b-custom-select" id="searchIsFeatured"
                                 v-model="props.search.is_featured" :options="[
                                     { id: enums.askEnum.YES, name: $t('label.yes') },
@@ -82,7 +82,7 @@
                         <div class="col-12 sm:col-6 md:col-4 xl:col-3">
                             <label for="searchStatus" class="db-field-title after:hidden">{{
                                 $t("label.status")
-                            }}</label>
+                                }}</label>
                             <vue-select class="db-field-control f-b-custom-select" id="searchStatus"
                                 v-model="props.search.status" :options="[
                                     { id: enums.statusEnum.ACTIVE, name: $t('label.active') },
@@ -270,6 +270,7 @@ export default {
                     item_category_id: null,
                     tax_id: null,
                     status: statusEnum.ACTIVE,
+                    extras: [],
                 },
                 search: {
                     paginate: 1,
@@ -378,6 +379,7 @@ export default {
                 tax_id: item.tax_id,
                 item_category_id: item.item_category_id,
                 status: item.status,
+                extras: item.extras ? item.extras.map(e => e.id) : [],
             };
         },
         destroy: function (id) {
