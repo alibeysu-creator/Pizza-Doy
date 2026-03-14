@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use Exception;
-use App\Models\Item;
+use App\Models\ItemCategory;
 use App\Models\ItemExtra;
 use App\Services\ItemExtraService;
 use App\Http\Requests\PaginateRequest;
@@ -21,49 +21,49 @@ class ItemExtraController extends AdminController
         $this->middleware(['permission:items_show'])->only('index', 'show', 'store', 'update', 'destroy');
     }
 
-    public function index(PaginateRequest $request, Item $item) : \Illuminate\Http\Response | \Illuminate\Http\Resources\Json\AnonymousResourceCollection | \Illuminate\Contracts\Foundation\Application | \Illuminate\Contracts\Routing\ResponseFactory
+    public function index(PaginateRequest $request, ItemCategory $itemCategory) : \Illuminate\Http\Response | \Illuminate\Http\Resources\Json\AnonymousResourceCollection | \Illuminate\Contracts\Foundation\Application | \Illuminate\Contracts\Routing\ResponseFactory
     {
         try {
-            return ItemExtraResource::collection($this->itemExtraService->list($request, $item));
+            return ItemExtraResource::collection($this->itemExtraService->list($request, $itemCategory));
         } catch (Exception $exception) {
             return response(['status' => false, 'message' => $exception->getMessage()], 422);
         }
     }
 
 
-    public function store(ItemExtraRequest $request, Item $item) : ItemExtraResource | \Illuminate\Http\Response | \Illuminate\Contracts\Foundation\Application | \Illuminate\Contracts\Routing\ResponseFactory
+    public function store(ItemExtraRequest $request, ItemCategory $itemCategory) : ItemExtraResource | \Illuminate\Http\Response | \Illuminate\Contracts\Foundation\Application | \Illuminate\Contracts\Routing\ResponseFactory
     {
         try {
-            return new ItemExtraResource($this->itemExtraService->store($request, $item));
+            return new ItemExtraResource($this->itemExtraService->store($request, $itemCategory));
         } catch (Exception $exception) {
             return response(['status' => false, 'message' => $exception->getMessage()], 422);
         }
     }
 
 
-    public function update(ItemExtraRequest $request, Item $item, ItemExtra $itemExtra) : ItemExtraResource | \Illuminate\Http\Response | \Illuminate\Contracts\Foundation\Application | \Illuminate\Contracts\Routing\ResponseFactory
+    public function update(ItemExtraRequest $request, ItemCategory $itemCategory, ItemExtra $itemExtra) : ItemExtraResource | \Illuminate\Http\Response | \Illuminate\Contracts\Foundation\Application | \Illuminate\Contracts\Routing\ResponseFactory
     {
         try {
-            return new ItemExtraResource($this->itemExtraService->update($request, $item, $itemExtra));
+            return new ItemExtraResource($this->itemExtraService->update($request, $itemCategory, $itemExtra));
         } catch (Exception $exception) {
             return response(['status' => false, 'message' => $exception->getMessage()], 422);
         }
     }
 
 
-    public function show(Item $item, ItemExtra $itemExtra) : ItemExtraResource | \Illuminate\Http\Response | \Illuminate\Contracts\Foundation\Application | \Illuminate\Contracts\Routing\ResponseFactory
+    public function show(ItemCategory $itemCategory, ItemExtra $itemExtra) : ItemExtraResource | \Illuminate\Http\Response | \Illuminate\Contracts\Foundation\Application | \Illuminate\Contracts\Routing\ResponseFactory
     {
         try {
-            return new ItemExtraResource($this->itemExtraService->show($item, $itemExtra));
+            return new ItemExtraResource($this->itemExtraService->show($itemCategory, $itemExtra));
         } catch (Exception $exception) {
             return response(['status' => false, 'message' => $exception->getMessage()], 422);
         }
     }
 
-    public function destroy(Item $item, ItemExtra $itemExtra) : \Illuminate\Http\Response | \Illuminate\Contracts\Foundation\Application | \Illuminate\Contracts\Routing\ResponseFactory
+    public function destroy(ItemCategory $itemCategory, ItemExtra $itemExtra) : \Illuminate\Http\Response | \Illuminate\Contracts\Foundation\Application | \Illuminate\Contracts\Routing\ResponseFactory
     {
         try {
-            $this->itemExtraService->destroy($item, $itemExtra);
+            $this->itemExtraService->destroy($itemCategory, $itemExtra);
             return response('', 202);
         } catch (Exception $exception) {
             return response(['status' => false, 'message' => $exception->getMessage()], 422);

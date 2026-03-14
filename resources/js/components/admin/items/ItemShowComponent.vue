@@ -2,7 +2,7 @@
     <LoadingComponent :props="loading" />
 
     <div class="col-12">
-        <div class="grid grid-cols-1 sm:grid-cols-5 mb-4 sm:mb-0">
+        <div class="grid grid-cols-1 sm:grid-cols-4 mb-4 sm:mb-0">
             <button type="button" @click="handleTab($event, '#information', '.db-tabBtn', '.db-tabDiv', 'active')"
                 class="db-tabBtn !justify-start active">
                 <i class="lab lab-information lab-font-size-16"></i>
@@ -17,11 +17,7 @@
                     class="lab lab-variation lab-font-size-16"></i>
                 {{ $t('label.variation') }}
             </button>
-            <button type="button" class="db-tabBtn !justify-start"
-                @click="handleTab($event, '#extra', '.db-tabBtn', '.db-tabDiv', 'active')"><i
-                    class="lab lab-extra lab-font-size-16"></i>
-                {{ $t('label.extra') }}
-            </button>
+
             <button type="button" class="db-tabBtn !justify-start"
                 @click="handleTab($event, '#addon', '.db-tabBtn', '.db-tabDiv', 'active')"><i
                     class="lab lab-addon lab-font-size-16"></i>
@@ -63,7 +59,7 @@
                         <span class="db-list-item-title w-full sm:w-1/2">{{ $t('label.featured') }}</span>
                         <span class="db-list-item-text w-full sm:w-1/2">{{
                             enums.askEnumArray[item.is_featured]
-                        }}</span>
+                            }}</span>
                     </div>
                 </div>
 
@@ -72,7 +68,7 @@
                         <span class="db-list-item-title w-full sm:w-1/2">{{ $t('label.status') }}</span>
                         <span class="db-list-item-text w-full sm:w-1/2">{{
                             enums.statusEnumArray[item.status]
-                        }}</span>
+                            }}</span>
                     </div>
                 </div>
 
@@ -93,6 +89,19 @@
                         </span>
                     </div>
                 </div>
+
+                <div class="col-12 !py-1.5" v-if="item.extras && item.extras.length > 0">
+                    <div class="db-list-item p-0">
+                        <span class="db-list-item-text mt-2 w-full">
+                            <span class="mt-2 db-list-item-title">{{ $t('menu.extras') }}</span><br>
+                            <div class="mt-2 flex flex-wrap gap-2">
+                                <span class="bg-[#EFF0F6] text-heading text-xs px-2.5 py-1.5 rounded-md" v-for="extra in item.extras" :key="extra.id">
+                                    {{ extra.name }} <span v-if="extra.price > 0">(+{{ extra.currency_price }})</span>
+                                </span>
+                            </div>
+                        </span>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -109,7 +118,7 @@
                             <i class="lab lab-upload-image"></i>
                             <span class="hidden sm:inline-block">{{
                                 $t("button.upload_new_image")
-                            }}</span>
+                                }}</span>
                             <input v-if="uploadButton" @change="changePreviewImage" ref="imageProperty"
                                 accept="image/png, image/jpeg, image/jpg" type="file" id="photo"
                                 class="absolute top-0 left-0 w-full h-full -z-10 opacity-0" />
@@ -132,9 +141,7 @@
         <div class="db-tabDiv" id="variations">
             <ItemVariationListComponent :item="parseInt($route.params.id)" />
         </div>
-        <div class="db-tabDiv" id="extra">
-            <ItemExtraListComponent :item="parseInt($route.params.id)" />
-        </div>
+
         <div class="db-tabDiv" id="addon">
             <ItemAddonListComponent :item="parseInt($route.params.id)" />
         </div>
@@ -148,7 +155,6 @@ import askEnum from "../../../enums/modules/askEnum";
 import appService from "../../../services/appService";
 import alertService from "../../../services/alertService";
 import ItemVariationListComponent from "./variation/ItemVariationListComponent";
-import ItemExtraListComponent from "./extra/ItemExtraListComponent";
 import ItemAddonListComponent from "./addon/ItemAddonListComponent";
 
 export default {
@@ -156,7 +162,6 @@ export default {
     components: {
         ItemVariationListComponent,
         LoadingComponent,
-        ItemExtraListComponent,
         ItemAddonListComponent
     },
     data() {

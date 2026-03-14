@@ -35,7 +35,7 @@ export const itemExtra = {
     actions: {
         lists: function (context, payload) {
             return new Promise((resolve, reject) => {
-                let url = `admin/item/extra/${payload.id}`;
+                let url = `admin/setting/item-category/extra/${payload.id}`;
                 if (payload) {
                     url = url + appService.requestHandler(payload);
                 }
@@ -55,10 +55,10 @@ export const itemExtra = {
         save: function (context, payload) {
             return new Promise((resolve, reject) => {
                 let method = axios.post;
-                let url = `/admin/item/extra/${payload.id}`;
+                let url = `admin/setting/item-category/extra/${payload.id}`;
                 if (this.state['itemExtra'].temp.isEditing) {
                     method = axios.put;
-                    url = `/admin/item/extra/${payload.id}/${this.state['itemExtra'].temp.temp_id}`;
+                    url = `admin/setting/item-category/extra/${payload.id}/${this.state['itemExtra'].temp.temp_id}`;
                 }
                 method(url, payload.form).then(res => {
                     context.dispatch('lists', payload.search).then().catch();
@@ -74,7 +74,7 @@ export const itemExtra = {
         },
         destroy: function (context, payload) {
             return new Promise((resolve, reject) => {
-                axios.delete(`admin/item/extra/${payload.item}/${payload.id}`).then((res) => {
+                axios.delete(`admin/setting/item-category/extra/${payload.item}/${payload.id}`).then((res) => {
                     context.dispatch('lists', payload.search).then().catch();
                     resolve(res);
                 }).catch((err) => {
@@ -84,7 +84,7 @@ export const itemExtra = {
         },
         show: function (context, payload) {
             return new Promise((resolve, reject) => {
-                axios.get(`admin/item/extra/${payload.item}/show/${payload.id}`).then((res) => {
+                axios.get(`admin/setting/item-category/extra/${payload.item}/show/${payload.id}`).then((res) => {
                     context.commit('show', res.data.data);
                     resolve(res);
                 }).catch((err) => {

@@ -33,16 +33,20 @@ class NormalItemResource extends JsonResource
             "thumb"          => $this->thumb,
             "cover"          => $this->cover,
             "preview"        => $this->preview,
-            "variations"     => $this->variations->groupBy('item_attribute_id'),
-            "itemAttributes" => ItemAttributeResource::collection($this->itemAttributeList($this->variations)),
-            "extras"         => ItemExtraResource::collection($this->extras->load('item')),
-            "addons"         => ItemAddonResource::collection($this->addons->load('addonItem', 'addonItem.variations','addonItem.offer', 'item')),
+            "variations"     => $this->variations->filter(function ($variation) {
+                return strtolower($variation->itemAttribute?->name) !== 'extras';
+            })->groupBy('item_attribute_id'),
+            "itemAttributes" => ItemAttributeResource::collection($this->itemAttributeList($this->variations->filter(function ($variation) {
+                return strtolower($variation->itemAttribute?->name) !== 'extras';
+            }))),
+            "extras"         => ItemExtraResource::collection($this->extras->load('itemCategory')),
+            "addons"         => ItemAddonResource::collection($this->addons->load('addonItem', 'addonItem.variations', 'addonItem.offer', 'item')),
             "offer"          => SimpleOfferResource::collection(
                 $this->offer->filter(function ($offer) use ($price) {
                     if (Carbon::now()->between(
-                            $offer->start_date,
-                            $offer->end_date
-                        ) && $offer->status === Status::ACTIVE) {
+                        $offer->start_date,
+                        $offer->end_date
+                    ) && $offer->status === Status::ACTIVE) {
                         $offer->flat_price     = AppLibrary::flatAmountFormat($price - ($price / 100 * $offer->amount));
                         $offer->convert_price  = AppLibrary::convertAmountFormat(
                             $price - ($price / 100 * $offer->amount)
@@ -57,8 +61,9 @@ class NormalItemResource extends JsonResource
         ];
     }
 
-    private function itemAttributeList($variations
-    ) : \Vanilla\Support\Collection | \IlluminateAgnostic\Str\Support\Collection | \IlluminateAgnostic\StrAgnostic\Str\Support\Collection | \IlluminateAgnostic\Collection\Support\Collection | \IlluminateAgnostic\ArrAgnostic\Arr\Support\Collection | \Illuminate\Support\Collection | \IlluminateAgnostic\Arr\Support\Collection {
+    private function itemAttributeList(
+        $variations
+    ): \Vanilla\Support\Collection | \IlluminateAgnostic\Str\Support\Collection | \IlluminateAgnostic\StrAgnostic\Str\Support\Collection | \IlluminateAgnostic\Collection\Support\Collection | \IlluminateAgnostic\ArrAgnostic\Arr\Support\Collection | \Illuminate\Support\Collection | \IlluminateAgnostic\Arr\Support\Collection {
         $array = [];
         foreach ($variations as $b) {
             if (!isset($array[$b->itemAttribute->id])) {

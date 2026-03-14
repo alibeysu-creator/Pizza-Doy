@@ -18,14 +18,15 @@ class ItemExtraResource extends JsonResource
     {
         return [
             'id'             => $this->id,
-            'item_id'        => $this->item_id,
+            'item_category_id' => $this->item_category_id,
             'name'           => $this->name,
             'price'          => $this->price,
             'currency_price' => AppLibrary::currencyAmountFormat($this->price),
             'flat_price'     => AppLibrary::flatAmountFormat($this->price),
             'convert_price'  => AppLibrary::convertAmountFormat($this->price),
             'status'         => $this->status,
-            "item"           => optional($this->item)->name,
+            'apply_to_all'   => $this->apply_to_all,
+            "item_category"  => optional($this->itemCategory)->name,
         ];
     }
 }

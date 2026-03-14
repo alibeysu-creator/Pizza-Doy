@@ -1,8 +1,7 @@
 <template>
     <!--========ITEM PART START=========-->
     <div v-if="design === itemDesignEnum.LIST" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
-        <div v-for="item in items" :key="item"
-            class="product-card-list">
+        <div v-for="item in items" :key="item" class="product-card-list">
             <img class="product-card-list-image" :src="item.thumb" alt="thumbnail">
             <div class="product-card-list-content-group">
                 <div class="product-card-list-header-group">
@@ -35,8 +34,7 @@
     </div>
     <div v-else-if="design === itemDesignEnum.GRID"
         class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 lg:gap-6">
-        <div v-for="item in items" :key="item"
-            class="product-card-grid">
+        <div v-for="item in items" :key="item" class="product-card-grid">
             <img class="product-card-grid-image" :src="item.cover" alt="product">
             <div class="product-card-grid-content-group">
                 <div class="product-card-grid-header-group">
@@ -196,7 +194,7 @@
                                                 {{ textShortener(extra.name, 15) }}</h3>
                                             <h4 class="block text-xs font-medium text-heading">+{{
                                                 extra.currency_price
-                                                }}</h4>
+                                            }}</h4>
                                         </div>
                                     </label>
                                 </SwiperSlide>

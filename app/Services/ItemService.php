@@ -122,6 +122,10 @@ class ItemService
                 if ($request->variations) {
                     $this->item->variations()->createMany(json_decode($request->variations, true));
                 }
+                if ($request->extras) {
+                    $extrasArray = json_decode($request->extras, true);
+                    $this->item->extras()->sync($extrasArray);
+                }
             });
             return $this->item;
         } catch (Exception $exception) {
@@ -169,6 +173,13 @@ class ItemService
                     if ($variationDeleteArray) {
                         ItemVariation::whereIn('id', $variationDeleteArray)->delete();
                     }
+                }
+                
+                if ($request->extras) {
+                    $extrasArray = json_decode($request->extras, true);
+                    $item->extras()->sync($extrasArray);
+                } else {
+                    $item->extras()->sync([]);
                 }
             });
             return Item::find($item->id);
@@ -231,7 +242,7 @@ class ItemService
     public function featuredItems()
     {
         try {
-            return Item::with('media','category','offer')->where(['is_featured' => Ask::YES, 'status' => Status::ACTIVE])->inRandomOrder()->limit(8)->get();
+            return Item::with('media', 'category', 'offer')->where(['is_featured' => Ask::YES, 'status' => Status::ACTIVE])->inRandomOrder()->limit(8)->get();
         } catch (Exception $exception) {
             Log::info($exception->getMessage());
             throw new Exception($exception->getMessage(), 422);
@@ -241,7 +252,7 @@ class ItemService
     public function mostPopularItems()
     {
         try {
-            return Item::with('media', 'category','offer')->withCount('orders')->where(['status' => Status::ACTIVE])->orderBy('orders_count', 'desc')->limit(6)->get();
+            return Item::with('media', 'category', 'offer')->withCount('orders')->where(['status' => Status::ACTIVE])->orderBy('orders_count', 'desc')->limit(6)->get();
         } catch (Exception $exception) {
             Log::info($exception->getMessage());
             throw new Exception($exception->getMessage(), 422);

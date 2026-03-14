@@ -28,7 +28,12 @@ class OrderItemResource extends JsonResource
             'quantity'                         => $this->quantity,
             'discount'                         => AppLibrary::currencyAmountFormat($this->discount),
             'price'                            => AppLibrary::currencyAmountFormat($this->price),
-            'item_variations'                  => json_decode($this->item_variations),
+            'item_variations'                  => array_values(array_filter(json_decode($this->item_variations, true) ?? [], function ($variation) {
+                if (is_array($variation) && isset($variation['variation_name'])) {
+                    return strtolower($variation['variation_name']) !== 'extras';
+                }
+                return true;
+            })),
             'item_extras'                      => json_decode($this->item_extras),
             'item_variation_currency_total'    => AppLibrary::currencyAmountFormat($this->item_variation_total),
             'item_extra_currency_total'        => AppLibrary::currencyAmountFormat($this->item_extra_total),

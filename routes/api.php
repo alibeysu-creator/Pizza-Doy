@@ -221,6 +221,12 @@ Route::prefix('admin')->name('admin.')->middleware(['installed', 'apiKey', 'loca
             Route::get('/', [ItemCategoryController::class, 'index']);
             Route::get('/show/{itemCategory}', [ItemCategoryController::class, 'show']);
             Route::post('/', [ItemCategoryController::class, 'store']);
+            Route::get('/extra/{itemCategory}', [ItemExtraController::class, 'index']);
+            Route::post('/extra/{itemCategory}', [ItemExtraController::class, 'store']);
+            Route::match(['put', 'patch'], '/extra/{itemCategory}/{itemExtra}', [ItemExtraController::class, 'update']);
+            Route::delete('/extra/{itemCategory}/{itemExtra}', [ItemExtraController::class, 'destroy']);
+            Route::get('/extra/{itemCategory}/show/{itemExtra}', [ItemExtraController::class, 'show']);
+
             Route::match(['post', 'put', 'patch'], '/{itemCategory}', [ItemCategoryController::class, 'update']);
             Route::delete('/{itemCategory}', [ItemCategoryController::class, 'destroy']);
             Route::post('/sort/category', [ItemCategoryController::class, 'sortCategory']);
@@ -540,12 +546,6 @@ Route::prefix('admin')->name('admin.')->middleware(['installed', 'apiKey', 'loca
         Route::match(['put', 'patch'], '/variation/{item}/{itemVariation}', [ItemVariationController::class, 'update']);
         Route::delete('/variation/{item}/{itemVariation}', [ItemVariationController::class, 'destroy']);
         Route::get('/variation/{item}/show/{itemVariation}', [ItemVariationController::class, 'show']);
-
-        Route::get('/extra/{item}', [ItemExtraController::class, 'index']);
-        Route::post('/extra/{item}', [ItemExtraController::class, 'store']);
-        Route::match(['put', 'patch'], '/extra/{item}/{itemExtra}', [ItemExtraController::class, 'update']);
-        Route::delete('/extra/{item}/{itemExtra}', [ItemExtraController::class, 'destroy']);
-        Route::get('/extra/{item}/show/{itemExtra}', [ItemExtraController::class, 'show']);
 
         Route::get('/addon/{item}', [ItemAddonController::class, 'index']);
         Route::post('/addon/{item}', [ItemAddonController::class, 'store']);

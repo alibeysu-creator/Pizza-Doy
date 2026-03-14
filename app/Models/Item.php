@@ -82,9 +82,9 @@ class Item extends Model implements HasMedia
         return $this->hasMany(ItemVariation::class)->with('itemAttribute')->where(['status' => Status::ACTIVE]);
     }
 
-    public function extras(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function extras(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->hasMany(ItemExtra::class)->where(['status' => Status::ACTIVE]);
+        return $this->belongsToMany(ItemExtra::class, 'item_item_extra', 'item_id', 'item_extra_id')->where(['status' => Status::ACTIVE]);
     }
 
     public function addons(): \Illuminate\Database\Eloquent\Relations\HasMany

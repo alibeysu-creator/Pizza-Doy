@@ -2,29 +2,32 @@
     <LoadingComponent :props="loading" />
     <section class="mb-16 mt-8">
         <div class="container">
-            <div v-if="categories.length > 0" class="swiper mb-12 menu-swiper">
-                <CategoryComponent :categories="categories" :design="categoryProps.design" />
+            <div v-if="categories.length > 0" class="mb-12 sticky top-[70px] z-[10] bg-white pt-4 pb-2">
+                <CategoryComponent :categories="categories" :design="categoryProps.design" :activeSlug="activeSlug" />
             </div>
 
-
-            <div v-if="Object.keys(category).length > 0"
-                class="flex gap-4 flex-col sm:flex-row items-center justify-between mb-6">
-                <h2 class="capitalize text-[26px] leading-[40px] font-semibold text-center sm:text-left text-primary">{{
-                    category.name
-                }}</h2>
-                <div class="flex items-center gap-3">
-                    <button type="button" class="lab lab-row-vertical lab-font-size-20 text-xl"
-                        v-on:click="itemProps.design = itemDesignEnum.LIST"
-                        :class="itemProps.design === itemDesignEnum.LIST ? 'text-primary' : 'text-[#A0A3BD]'"></button>
-                    <button type="button" class="lab lab-element-3 lab-font-size-20 text-xl"
-                        v-on:click="itemProps.design = itemDesignEnum.GRID"
-                        :class="itemProps.design === itemDesignEnum.GRID ? 'text-primary' : 'text-[#A0A3BD]'"></button>
+            <div class="menu-sections ">
+                <div v-for="category in categories" :key="category.id" :id="category.slug" class="menu-section mb-12 scroll-mt-[170px]">
+                    <div v-if="category.items && category.items.length > 0">
+                        <div class="flex gap-4 flex-col sm:flex-row items-center justify-between mb-6">
+                            <h2 class="capitalize text-[26px] leading-[40px] font-semibold text-center sm:text-left text-primary">
+                                {{ category.name }}
+                            </h2>
+                            <div class="flex items-center gap-3">
+                                <button type="button" class="lab lab-row-vertical lab-font-size-20 text-xl"
+                                    v-on:click="itemProps.design = itemDesignEnum.LIST"
+                                    :class="itemProps.design === itemDesignEnum.LIST ? 'text-primary' : 'text-[#A0A3BD]'"></button>
+                                <button type="button" class="lab lab-element-3 lab-font-size-20 text-xl"
+                                    v-on:click="itemProps.design = itemDesignEnum.GRID"
+                                    :class="itemProps.design === itemDesignEnum.GRID ? 'text-primary' : 'text-[#A0A3BD]'"></button>
+                            </div>
+                        </div>
+                        <ItemComponent :items="category.items" :design="itemProps.design" />
+                    </div>
                 </div>
             </div>
 
-            <ItemComponent v-if="hasItems" :items="items.items" :design="itemProps.design" />
-
-            <div class="mt-12" v-else>
+            <div v-if="categories.length === 0" class="mt-12">
                 <div class="max-w-[250px] mx-auto">
                     <img class="w-full mb-8" :src="setting.item_not_found" alt="image_order_not_found">
                 </div>
@@ -52,8 +55,6 @@ export default {
                 isActive: false
             },
             itemDesignEnum: itemDesignEnum,
-            category: {},
-            items: {},
             categoryProps: {
                 search: {
                     paginate: 0,
@@ -65,7 +66,9 @@ export default {
             },
             itemProps: {
                 design: itemDesignEnum.LIST,
-            }
+            },
+            activeSlug: "",
+            isScrolling: false
         }
     },
     computed: {
@@ -74,41 +77,65 @@ export default {
         },
         setting: function () {
             return this.$store.getters['frontendSetting/lists'];
-        },
-        hasItems() {
-            const list = this.items?.items;
-            return Array.isArray(list) ? list.length > 0 : !!(list && Object.keys(list).length);
         }
     },
     mounted() {
         this.loading.isActive = true;
         this.$store.dispatch("frontendItemCategory/lists", this.categoryProps.search).then((res) => {
             this.loading.isActive = false;
+            this.$nextTick(() => {
+                this.scrollToSection();
+                window.addEventListener('scroll', this.handleScroll);
+            });
         }).catch((err) => {
             this.loading.isActive = false;
         });
-        this.categoryShow();
+    },
+    unmounted() {
+        window.removeEventListener('scroll', this.handleScroll);
     },
     methods: {
-        categoryShow: function () {
-            if (typeof this.$route.query.s !== "undefined" && this.$route.query.s !== "") {
-                this.loading.isActive = true;
-                this.$store.dispatch("frontendItemCategory/show", {
-                    slug: this.$route.query.s,
-                    vuex: false
-                }).then((res) => {
-                    this.category = res.data.data;
-                    this.items = res.data.data;
-                    this.loading.isActive = false;
-                }).catch((err) => {
-                    this.loading.isActive = false;
-                });
+        scrollToSection: function () {
+            this.$nextTick(() => {
+                if (typeof this.$route.query.s !== "undefined" && this.$route.query.s !== "") {
+                    const element = document.getElementById(this.$route.query.s);
+                    if (element) {
+                        this.isScrolling = true;
+                        this.activeSlug = this.$route.query.s;
+                        
+                        // Use a small delay to ensure it scrolls AFTER any potential router default jumps
+                        setTimeout(() => {
+                            element.scrollIntoView({ behavior: 'smooth' });
+                        }, 50);
+
+                        setTimeout(() => {
+                            this.isScrolling = false;
+                        }, 1200);
+                    }
+                }
+            });
+        },
+        handleScroll: function () {
+            if (this.isScrolling) return;
+
+            const sections = document.querySelectorAll(".menu-section");
+            let current = "";
+
+            sections.forEach((section) => {
+                const sectionTop = section.offsetTop;
+                if (window.pageYOffset >= sectionTop - 220) { // Offset buffert for sticky area
+                    current = section.getAttribute("id");
+                }
+            });
+
+            if (current !== "" && this.activeSlug !== current) {
+                this.activeSlug = current;
             }
         }
     },
     watch: {
-        $route() {
-            this.categoryShow();
+        '$route.query.s': function () {
+            this.scrollToSection();
         }
     }
 }

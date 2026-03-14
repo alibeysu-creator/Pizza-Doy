@@ -108,8 +108,14 @@ const router = createRouter({
     mode: 'history',
     history: createWebHistory(),
     routes,
-    scrollBehavior() {
-        return { left: 0, top: 0 }
+    scrollBehavior(to, from, savedPosition) {
+        if (savedPosition) {
+            return savedPosition;
+        } else if (to.path === from.path) {
+            return false;
+        } else {
+            return { left: 0, top: 0 }
+        }
     }
 });
 

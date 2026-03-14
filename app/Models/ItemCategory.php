@@ -50,4 +50,9 @@ class ItemCategory extends Model implements HasMedia
     {
         return $this->hasMany(Item::class)->where(['status' => Status::ACTIVE]);
     }
+
+    public function extras(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ItemExtra::class)->where(['status' => Status::ACTIVE]);
+    }
 }
