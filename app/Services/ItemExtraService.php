@@ -73,18 +73,14 @@ class ItemExtraService
     public function update(ItemExtraRequest $request, ItemCategory $itemCategory, ItemExtra $itemExtra)
     {
         try {
-            if ($itemCategory->id == $itemExtra->item_category_id) {
-                $itemExtra->update($request->validated());
-                Log::info("ItemExtraService@update: apply_to_all = " . $request->apply_to_all);
-                if ($request->apply_to_all == \App\Enums\Ask::YES) {
-                    $itemIds = $itemCategory->items()->pluck('id');
-                    Log::info("ItemExtraService@update: Syncing with " . count($itemIds) . " items");
-                    $itemExtra->items()->syncWithoutDetaching($itemIds);
-                }
-                return $itemExtra;
-            } else {
-                throw new Exception(trans('all.item_match'), 422);
+            $itemExtra->update($request->validated());
+            Log::info("ItemExtraService@update: apply_to_all = " . $request->apply_to_all);
+            if ($request->apply_to_all == \App\Enums\Ask::YES) {
+                $itemIds = $itemCategory->items()->pluck('id');
+                Log::info("ItemExtraService@update: Syncing with " . count($itemIds) . " items");
+                $itemExtra->items()->syncWithoutDetaching($itemIds);
             }
+            return $itemExtra;
         } catch (Exception $exception) {
             Log::info($exception->getMessage());
             throw new Exception($exception->getMessage(), 422);
