@@ -253,7 +253,8 @@ class OrderService
                         'user_id'          => Auth::user()->id,
                         'status'           => OrderStatus::PENDING,
                         'order_datetime'   => date('Y-m-d H:i:s'),
-                        'preparation_time' => Settings::group('order_setup')->get('order_setup_food_preparation_time')
+                        'preparation_time' => Settings::group('order_setup')->get('order_setup_food_preparation_time'),
+                        'active'           => $request->payment_method == 'cod' ? Ask::YES : Ask::NO
                     ]
                 );
 
@@ -352,7 +353,8 @@ class OrderService
                         'token'            => $request->token,
                         'payment_status'   => PaymentStatus::PAID,
                         'order_datetime'   => date('Y-m-d H:i:s'),
-                        'preparation_time' => Settings::group('order_setup')->get('order_setup_food_preparation_time')
+                        'preparation_time' => Settings::group('order_setup')->get('order_setup_food_preparation_time'),
+                        'active'           => Ask::YES,
                     ]
                 );
 
@@ -444,7 +446,8 @@ class OrderService
                         'user_id'          => $request->customer_id,
                         'status'           => OrderStatus::PENDING,
                         'order_datetime'   => date('Y-m-d H:i:s'),
-                        'preparation_time' => Settings::group('order_setup')->get('order_setup_food_preparation_time')
+                        'preparation_time' => Settings::group('order_setup')->get('order_setup_food_preparation_time'),
+                        'active'           => Ask::YES,
                     ]
                 );
 

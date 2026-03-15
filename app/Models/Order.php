@@ -35,7 +35,8 @@ class Order extends Model
         'source',
         'pos_payment_method',
         'pos_payment_note',
-        'pos_received_amount'
+        'pos_received_amount',
+        'active'
     ];
 
     protected $casts = [

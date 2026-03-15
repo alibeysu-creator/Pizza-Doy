@@ -501,6 +501,7 @@
         "msg91_status": "حالة MSG91",
         "total_tax": "إجمالي الضريبة",
         "including": "بما في ذلك",
+        "apply_to_all_items": "هل يطبق على جميع العناصر في هذه الفئة؟",
         "payfast_merchant_id": "معرف تاجر Payfast",
         "payfast_merchant_key": "مفتاح تاجر Payfast",
         "payfast_passphrase": "عبارة مرور Payfast",

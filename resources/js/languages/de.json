@@ -504,6 +504,7 @@
         "msg91_status": "MSG91-Status",
         "total_tax": "Totale belasting",
         "including": "Inbegrepen",
+        "apply_to_all_items": "Auf alle Artikel in dieser Kategorie anwenden?",
         "payfast_merchant_id": "Payfast-Händler-ID",
         "payfast_merchant_key": "Payfast-Händlerschlüssel",
         "payfast_passphrase": "Payfast-Passphrase",

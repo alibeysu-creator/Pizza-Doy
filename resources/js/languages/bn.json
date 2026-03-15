@@ -502,6 +502,7 @@
         "msg91_status": "MSG91  স্ট্যাটাস",
         "total_tax": "মোট ট্যাক্স",
         "including": "সহ",
+        "apply_to_all_items": "এই ক্যাটাগরির সকল পন্যের জন্য প্রযোজ্য?",
         "payfast_merchant_id": "পেফাস্ট মার্চেন্ট আইডি",
         "payfast_merchant_key": "পেফাস্ট মার্চেন্ট কী",
         "payfast_passphrase": "পেফাস্ট পাসফ্রেজ",
