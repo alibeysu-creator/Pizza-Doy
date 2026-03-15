@@ -2,7 +2,7 @@
     <LoadingComponent :props="loading" />
     <section class="mb-16 mt-8">
         <div class="container">
-            <div v-if="categories.length > 0" class="mb-12 sticky top-[70px] z-[10] bg-white pt-4 pb-2">
+            <div v-if="categories.length > 0" class="mb-12 sticky top-[110px] lg:top-[70px] z-[10] bg-white pt-4 pb-2">
                 <CategoryComponent :categories="categories" :design="categoryProps.design" :activeSlug="activeSlug" />
             </div>
 
