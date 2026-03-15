@@ -31,7 +31,8 @@ class FrontendOrder extends Model
         'payment_status',
         'status',
         'dining_table_id',
-        'source'
+        'source',
+        'active'
     ];
 
     protected $casts = [

@@ -505,6 +505,7 @@
         "msg91_status": "MSG91 Status",
         "total_tax": "Total Tax",
         "including": "Including",
+        "apply_to_all_items": "Apply to all items in this category?",
         "payfast_merchant_id": "Payfast Merchant Id",
         "payfast_merchant_key": "Payfast Merchant Key",
         "payfast_passphrase": "Payfast Passphrase",

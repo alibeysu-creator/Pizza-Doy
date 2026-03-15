@@ -2,12 +2,12 @@
     <LoadingComponent :props="loading" />
     <section class="mb-16 mt-8">
         <div class="container">
-            <div v-if="categories.length > 0" class="mb-12 sticky top-[70px] z-[10] bg-white pt-4 pb-2">
+            <div v-if="categories.length > 0" class="mb-12 sticky top-[118px] lg:top-[74px] z-[10] bg-white pt-4 pb-2">
                 <CategoryComponent :categories="categories" :design="categoryProps.design" :activeSlug="activeSlug" />
             </div>
 
             <div class="menu-sections ">
-                <div v-for="category in categories" :key="category.id" :id="category.slug" class="menu-section mb-12 scroll-mt-[170px]">
+                <div v-for="category in categories" :key="category.id" :id="category.slug" class="menu-section mb-12 scroll-mt-[210px] lg:scroll-mt-[170px]">
                     <div v-if="category.items && category.items.length > 0">
                         <div class="flex gap-4 flex-col sm:flex-row items-center justify-between mb-6">
                             <h2 class="capitalize text-[26px] leading-[40px] font-semibold text-center sm:text-left text-primary">
