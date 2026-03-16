@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         // Truncate existing data to avoid constraint/data issues
-        DB::table('item_extras')->truncate();
+        DB::table('item_extras')->delete();
 
         Schema::table('item_extras', function (Blueprint $table) {
             $table->dropForeign(['item_id']);
