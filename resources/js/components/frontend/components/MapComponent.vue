@@ -1,16 +1,25 @@
 <template>
     <div class="w-full max-w-[630px] rounded-2xl bg-white">
         <LoadingContentComponent :props="loading" />
-        <div v-if="setting.autocomplete || setting.currentLocation"
-            class="w-full h-12 mb-4 shadow-xs rounded-lg flex items-center gap-5 pl-[18px] pr-2.5 bg-white">
-            <i class="lab lab-search-normal lab-font-size-24"></i>
-            <input v-if="setting.autocomplete" id="map-autocomplete-input" type="text" placeholder="Enter a location"
-                class="w-full h-full placeholder:text-lg placeholder:font-normal placeholder:font-public text-lg font-public">
+
+        <div v-if="setting.autocomplete || setting.currentLocation" class="mb-4">
+            <div v-if="setting.autocomplete"
+                class="w-full h-12 shadow-xs rounded-lg flex items-center gap-3 pl-[18px] pr-3 bg-white border border-[#D9DBE9]">
+                <i class="lab lab-search-normal lab-font-size-24"></i>
+                <input id="map-autocomplete-input" type="text"
+                    placeholder="Straße, Hausnummer, PLZ oder Ort eingeben"
+                    autocomplete="street-address"
+                    @keydown.enter.prevent
+                    class="w-full h-full placeholder:text-sm placeholder:font-normal placeholder:font-public text-base font-public outline-none">
+            </div>
+
             <button v-if="setting.currentLocation" id="map-current-location" type="button"
-                class="flex-shrink-0 w-7 h-7 rounded flex items-center justify-center bg-primary">
-                <i class="lab lab-gps-tracker text-white"></i>
+                class="mt-3 w-full h-11 rounded-lg flex items-center justify-center gap-2 border border-primary text-primary bg-white font-medium">
+                <i class="lab lab-gps-tracker"></i>
+                <span>Meinen Standort verwenden</span>
             </button>
         </div>
+
         <div ref="theGoogleMap" id="the-google-map" class="w-full h-[180px] rounded-xl mb-4"></div>
     </div>
 </template>
@@ -32,23 +41,11 @@ export default {
         position: Function,
         setting: {
             type: Object,
-            default: {
-                autocomplete: {
-                    type: Boolean,
-                    default: true,
-                    required: false
-                },
-                mouseEvent: {
-                    type: Boolean,
-                    default: true,
-                    required: false
-                },
-                currentLocation: {
-                    type: Boolean,
-                    default: true,
-                    required: false
-                }
-            }
+            default: () => ({
+                autocomplete: true,
+                mouseEvent: true,
+                currentLocation: true,
+            })
         }
     },
     data() {
@@ -65,136 +62,145 @@ export default {
     },
     mounted: async function () {
         this.loading.isActive = true;
-        if ((this.location.lat === null || this.location.lat === "") && (this.location.lng === null || this.location.lng === "")) {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        this.currentLocation = {
-                            lat: position.coords.latitude,
-                            lng: position.coords.longitude,
-                        };
-                        this.mainMap(this.currentLocation);
-                    }, () => {
-                        alert('The Geolocation service failed.');
-                    }
-                );
-            } else {
-                alert("Your browser doesn't support geolocation.");
-            }
+
+        const hasSavedLocation = this.location
+            && this.location.lat !== null
+            && this.location.lat !== ""
+            && this.location.lng !== null
+            && this.location.lng !== "";
+
+        if (hasSavedLocation) {
+            this.currentLocation = {
+                lat: parseFloat(this.location.lat),
+                lng: parseFloat(this.location.lng),
+            };
+            await this.mainMap(this.currentLocation, true);
         } else {
-            this.currentLocation.lat = parseFloat(this.location.lat);
-            this.currentLocation.lng = parseFloat(this.location.lng);
-            await this.mainMap(this.currentLocation);
+            // Karte anzeigen, aber NICHT automatisch nach GPS fragen.
+            // Der Kunde kann die Adresse eintippen oder den Standort-Button drücken.
+            await this.mainMap({ lat: 51.1657, lng: 10.4515 }, false);
         }
     },
     methods: {
-        mainMap: async function (location) {
-            const google = await loader.load();
+        mainMap: async function (location, hasInitialPosition = false) {
+            try {
+                const google = await loader.load();
 
-            const map = new google.maps.Map(this.$refs.theGoogleMap, {
-                center: location,
-                zoom: 15
-            });
+                const map = new google.maps.Map(this.$refs.theGoogleMap, {
+                    center: location,
+                    zoom: hasInitialPosition ? 15 : 6,
+                });
 
-            let markers = [];
-            const marker = new google.maps.Marker({
-                position: location,
-                map: map
-            });
-            markers.push(marker);
+                let markers = [];
 
-            if (this.setting.currentLocation) {
-                let currentLocationButton = document.getElementById('map-current-location');
-                currentLocationButton.addEventListener("click", () => {
-                    if (navigator.geolocation) {
-                        navigator.geolocation.getCurrentPosition(
-                            (position) => {
-                                const latLng = {
-                                    lat: position.coords.latitude,
-                                    lng: position.coords.longitude,
-                                };
+                const setMarker = (latLng) => {
+                    for (let i = 0; i < markers.length; i++) {
+                        markers[i].setMap(null);
+                    }
+                    markers = [];
 
-                                this.currentLocation = latLng;
+                    const marker = new google.maps.Marker({
+                        position: latLng,
+                        map: map,
+                    });
+                    markers.push(marker);
+                    map.setZoom(15);
+                    map.setCenter(marker.getPosition());
+                };
 
-                                for (let i = 0; i < markers.length; i++) {
-                                    markers[i].setMap(null);
-                                }
+                if (hasInitialPosition) {
+                    setMarker(location);
+                }
 
-                                markers = [];
-                                const marker = new google.maps.Marker({
-                                    position: latLng,
-                                    map: map
-                                });
-                                markers.push(marker);
-
-                                window.setTimeout(() => {
-                                    map.setZoom(15);
-                                    map.setCenter(marker.getPosition());
-                                }, 1000);
-                                this.setPosition();
-                            }, () => {
-                                alert('The Geolocation service failed.');
+                if (this.setting.currentLocation) {
+                    const currentLocationButton = document.getElementById('map-current-location');
+                    if (currentLocationButton) {
+                        currentLocationButton.addEventListener("click", () => {
+                            if (!navigator.geolocation) {
+                                alert("Ihr Browser unterstützt die Standortbestimmung nicht. Bitte geben Sie Ihre Adresse manuell ein.");
+                                return;
                             }
-                        );
-                    } else {
-                        alert("Your browser doesn't support geolocation.");
+
+                            this.loading.isActive = true;
+                            navigator.geolocation.getCurrentPosition(
+                                async (position) => {
+                                    const latLng = {
+                                        lat: position.coords.latitude,
+                                        lng: position.coords.longitude,
+                                    };
+
+                                    this.currentLocation = latLng;
+                                    setMarker(latLng);
+                                    await this.setPosition();
+                                    this.loading.isActive = false;
+                                },
+                                () => {
+                                    this.loading.isActive = false;
+                                    alert("Der Standort konnte nicht ermittelt werden. Bitte geben Sie Ihre Adresse manuell ein.");
+                                },
+                                {
+                                    enableHighAccuracy: true,
+                                    timeout: 10000,
+                                    maximumAge: 60000,
+                                }
+                            );
+                        });
                     }
-                });
-            }
+                }
 
-            if (this.setting.mouseEvent) {
-                map.addListener("click", (mapsMouseEvent) => {
-                    const latLng = mapsMouseEvent.latLng.toJSON();
-                    this.currentLocation.lat = latLng.lat;
-                    this.currentLocation.lng = latLng.lng;
-
-                    for (let i = 0; i < markers.length; i++) {
-                        markers[i].setMap(null);
-                    }
-
-                    markers = [];
-                    const marker = new google.maps.Marker({
-                        position: latLng,
-                        map: map
+                if (this.setting.mouseEvent) {
+                    map.addListener("click", async (mapsMouseEvent) => {
+                        const latLng = mapsMouseEvent.latLng.toJSON();
+                        this.currentLocation = latLng;
+                        setMarker(latLng);
+                        await this.setPosition();
                     });
-                    markers.push(marker);
-                    this.setPosition();
-                });
-            }
+                }
 
-            if (this.setting.autocomplete) {
-                let input = document.getElementById('map-autocomplete-input');
-                const autocomplete = new google.maps.places.Autocomplete(input);
-                autocomplete.addListener('place_changed', () => {
-                    const place = autocomplete.getPlace();
-                    const latLng = {
-                        lat: place.geometry.location.lat(),
-                        lng: place.geometry.location.lng()
-                    };
-                    this.currentLocation = latLng;
+                if (this.setting.autocomplete) {
+                    const input = document.getElementById('map-autocomplete-input');
+                    if (input) {
+                        const autocomplete = new google.maps.places.Autocomplete(input, {
+                            fields: ["geometry", "formatted_address", "address_components", "name"],
+                            types: ["address"],
+                        });
 
-                    for (let i = 0; i < markers.length; i++) {
-                        markers[i].setMap(null);
+                        autocomplete.addListener('place_changed', async () => {
+                            const place = autocomplete.getPlace();
+
+                            if (!place.geometry || !place.geometry.location) {
+                                alert("Bitte wählen Sie eine Adresse aus den Google-Vorschlägen aus.");
+                                return;
+                            }
+
+                            const latLng = {
+                                lat: place.geometry.location.lat(),
+                                lng: place.geometry.location.lng(),
+                            };
+
+                            this.currentLocation = latLng;
+                            setMarker(latLng);
+                            await this.setPosition();
+                        });
                     }
+                }
 
-                    markers = [];
-                    const marker = new google.maps.Marker({
-                        position: latLng,
-                        map: map
-                    });
-                    markers.push(marker);
-
-                    window.setTimeout(() => {
-                        map.setZoom(15);
-                        map.setCenter(marker.getPosition());
-                    }, 1000);
-                    this.setPosition();
-                });
+                if (hasInitialPosition) {
+                    await this.setPosition();
+                }
+            } catch (error) {
+                console.error("Google Maps konnte nicht geladen werden:", error);
+                alert("Die Karte konnte nicht geladen werden. Bitte versuchen Sie es erneut.");
+            } finally {
+                this.loading.isActive = false;
             }
-            this.setPosition();
-            this.loading.isActive = false;
         },
-        setPosition: function () {
+
+        setPosition: async function () {
+            if (this.currentLocation.lat === null || this.currentLocation.lng === null) {
+                return;
+            }
+
             let other = {
                 "rodeNo": null,
                 "block": null,
@@ -204,62 +210,69 @@ export default {
                 "state": null,
                 "country": null,
             };
-            const latLngLiteral = new google.maps.LatLng(this.currentLocation.lat, this.currentLocation.lng);
-            const geocoder = new google.maps.Geocoder();
-            geocoder.geocode({ latLng: latLngLiteral }).then(res => {
+
+            try {
+                const google = await loader.load();
+                const latLngLiteral = new google.maps.LatLng(this.currentLocation.lat, this.currentLocation.lng);
+                const geocoder = new google.maps.Geocoder();
+                const res = await geocoder.geocode({ location: latLngLiteral });
+
                 for (let i = 0; i < res.results.length; i++) {
                     for (let j = 0; j < res.results[i].address_components.length; j++) {
+                        const component = res.results[i].address_components[j];
+                        const types = component.types || [];
 
-                        if (res.results[i].address_components[j].types[0] === "route" && other.rodeNo === null) {
-                            other.rodeNo = res.results[i].address_components[j].long_name;
+                        if (types.includes("route") && other.rodeNo === null) {
+                            other.rodeNo = component.long_name;
                         }
 
-                        if (res.results[i].address_components[j].types[0] === "neighborhood" && res.results[i].address_components[j].types[1] === "political" && other.block === null) {
-                            other.block = res.results[i].address_components[j].long_name;
+                        if (types.includes("neighborhood") && other.block === null) {
+                            other.block = component.long_name;
                         }
 
-                        if (res.results[i].address_components[j].types[0] === "political" && res.results[i].address_components[j].types[1] === "sublocality" && res.results[i].address_components[j].types[2] === "sublocality_level_1" && other.area === null) {
-                            other.area = res.results[i].address_components[j].long_name;
+                        if (types.includes("sublocality_level_1") && other.area === null) {
+                            other.area = component.long_name;
                         }
 
-                        if (res.results[i].address_components[j].types[0] === "locality" && res.results[i].address_components[j].types[1] === "political" && other.city === null) {
-                            other.city = res.results[i].address_components[j].long_name;
+                        if (types.includes("locality") && other.city === null) {
+                            other.city = component.long_name;
                         }
 
-                        for (let k = 0; k < res.results[i].address_components[j].types.length; k++) {
-                            if (res.results[i].address_components[j].types[k] === "postal_code" && other.zipCode === null) {
-                                other.zipCode = res.results[i].address_components[j].long_name;
-                            }
+                        if (types.includes("postal_code") && other.zipCode === null) {
+                            other.zipCode = component.long_name;
                         }
 
-                        if (res.results[i].address_components[j].types[0] === "administrative_area_level_1" && res.results[i].address_components[j].types[1] === "political" && other.state === null) {
-                            other.state = res.results[i].address_components[j].long_name;
+                        if (types.includes("administrative_area_level_1") && other.state === null) {
+                            other.state = component.long_name;
                         }
 
-
-                        if (res.results[i].address_components[j].types[0] === "country" && other.country === null) {
-                            other.country = res.results[i].address_components[j].long_name;
+                        if (types.includes("country") && other.country === null) {
+                            other.country = component.long_name;
                         }
                     }
                 }
 
                 let formatted_address = "";
-                _.forEach(other, (value, index) => {
-                    if (value !== null && value !== "") {
-                        formatted_address += value;
-
-                        if (index !== "country") {
-                            formatted_address += ",";
+                if (res.results.length > 0 && res.results[0].formatted_address) {
+                    formatted_address = res.results[0].formatted_address;
+                } else {
+                    _.forEach(other, (value, index) => {
+                        if (value !== null && value !== "") {
+                            formatted_address += value;
+                            if (index !== "country") {
+                                formatted_address += ",";
+                            }
+                            formatted_address += " ";
                         }
-                        formatted_address += " ";
-                    }
-                });
+                    });
+                }
 
-                this.address = formatted_address;
+                this.address = formatted_address.trim();
                 this.position({ address: this.address, other: other, location: this.currentLocation });
-            }).catch((error) => {
+            } catch (error) {
+                console.error("Adresse konnte nicht ermittelt werden:", error);
                 this.position({ address: this.address, other: other, location: this.currentLocation });
-            });
+            }
         },
     }
 }

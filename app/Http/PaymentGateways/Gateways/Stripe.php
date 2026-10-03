@@ -44,7 +44,7 @@ class Stripe extends PaymentAbstract
             }
 
             $response = $this->gateway->charges->create([
-                'amount'      => (int) $order->total * 100,
+                'amount'      => (int) ($order->total *100),
                 'currency'    => $currencyCode,
                 'source'      => $request->stripeToken,
                 'description' => 'Food order payment',

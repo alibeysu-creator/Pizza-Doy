@@ -44,8 +44,8 @@ class MyOrderDetailsController extends AdminController
         try {
             // Initialize variables         
 
-            // Find the order by ID
-            $order = Order::findOrFail($orderId)
+            // Find the order by ID without BranchScope to ensure it's found across branch contexts
+            $order = Order::withoutGlobalScope(\App\Models\Scopes\BranchScope::class)->findOrFail($orderId)
                 ->load('user', 'address', 'branch', 'deliveryBoy', 'coupon', 'diningTable', 'orderItems.orderItem');
 
 
@@ -184,6 +184,8 @@ class MyOrderDetailsController extends AdminController
                     }
                 }
 
+                $emailArray = array_unique($emailArray);
+
                 if (count($emailArray) > 0) {
                     try {
                         $notificationAlert = NotificationAlert::where(['language' => 'admin_and_branch_manager_new_order_message'])->first();
@@ -214,11 +216,11 @@ class MyOrderDetailsController extends AdminController
 
                                 return response(['status' => true, 'message' => 'Order receipt sent successfully.']);
                             } catch (Exception $e) {
-                                Log::info($e->getMessage());
+                                Log::error('OrderReceiptMail sending failed: ' . $e->getMessage());
                             }
                         }
                     } catch (Exception $e) {
-                        Log::info($e->getMessage());
+                        Log::error('OrderReceiptMail fetch alert failed: ' . $e->getMessage());
                     }
                 }
             }
@@ -242,6 +244,7 @@ class MyOrderDetailsController extends AdminController
 
             return response(['status' => true, 'message' => 'Order receipt sent successfully.']);
         } catch (Exception $exception) {
+            Log::error('sendOrderReceipt method total failure: ' . $exception->getMessage());
             return response(['status' => false, 'message' => $exception->getMessage()], 422);
         }
     }
